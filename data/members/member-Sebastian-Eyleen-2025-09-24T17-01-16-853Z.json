@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-09-24T17:01:16.400Z",
+  "person": {
+    "nachname": "Sebastian",
+    "vorname": "Eyleen",
+    "geburtsdatum": "1989-11-19",
+    "email": "sebastian.plankl@gmail.com",
+    "telefon": "1232"
+  },
+  "adresse": {
+    "strasse": "Rascher Str.",
+    "hausnummer": "3b",
+    "plz": "92363",
+    "ort": "Hamberg"
+  },
+  "qualifikationen": {
+    "mta_absolviert": false,
+    "dienstjahre_25": true,
+    "dienstjahre_40": false
+  },
+  "consent": {
+    "datenschutz": true
+  },
+  "meta": {
+    "accessVerified": true
+  }
+}
