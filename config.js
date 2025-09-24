@@ -5,11 +5,8 @@ window.GITHUB_CONFIG = {
     repoName: 'ehrenamtskarte_ff_hamberg_v2',
     dataBranch: 'data',
     dataFolder: 'data',
-    accessPassword: 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER' // Will be replaced during deployment
-};
-window.GITHUB_CONFIG = window.GITHUB_CONFIG || {
-    tokenConfigured: false,
-    token: 'GITHUB_TOKEN_PLACEHOLDER'
+    accessPassword: 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER', // Will be replaced during deployment
+    isDevelopment: true // This flag helps reduce development warnings
 };
 
 console.log('📁 Local config.js loaded - deployment will override if token is configured');

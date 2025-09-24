@@ -48,7 +48,8 @@ jobs:
               repoName: 'ehrenamtskarte_ff_hamberg_v2',
               dataBranch: 'data',
               dataFolder: 'data',
-              accessPassword: '${ACCESS_PASSWORD:-FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER}'
+              accessPassword: '${ACCESS_PASSWORD:-FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER}',
+              isDevelopment: false // Production deployment
           };
           EOF
 
@@ -57,7 +58,7 @@ jobs:
           else
             echo "⚠️ FEUERWEHR_ACCESS_PASSWORD secret not set - password validation will be skipped"
           fi
-          
+
           # Create robots.txt for privacy
           cat > _site/robots.txt << 'EOF'
           User-agent: *
@@ -75,18 +76,18 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
-        
+
       - name: 📁 Download build artifact
         uses: actions/download-artifact@v4
         with:
           name: github-pages
           path: ./artifact
-          
-      - name: 📦 Extract artifact  
+
+      - name: 📦 Extract artifact
         run: |
           cd artifact
           tar -xf artifact.tar
-          
+
       - name: 🚀 Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:

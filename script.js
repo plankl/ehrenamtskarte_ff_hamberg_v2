@@ -57,8 +57,10 @@ class FirefighterDataManager {
         }
         
         if (!password || password === 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER') {
-            console.warn('⚠️ No access password configured in secrets - basic validation only');
-            this.setStatus('⚠️ Feuerwehr-Passwort nicht konfiguriert - Grundvalidierung aktiv.', 'info');
+            if (!this.config.isDevelopment) {
+                console.warn('⚠️ No access password configured in secrets - basic validation only');
+                this.setStatus('⚠️ Feuerwehr-Passwort nicht konfiguriert - Grundvalidierung aktiv.', 'info');
+            }
         } else {
             console.log('✅ Feuerwehr access password configured');
         }
@@ -154,7 +156,9 @@ Token eingeben:`;
                 this.setStatus('Bitte geben Sie das Feuerwehr-Passwort ein.', 'error');
                 return false;
             }
-            console.warn('⚠️ No access password configured in secrets - basic validation only');
+            if (!this.config.isDevelopment) {
+                console.warn('⚠️ No access password configured in secrets - basic validation only');
+            }
         }
         
         return true;
