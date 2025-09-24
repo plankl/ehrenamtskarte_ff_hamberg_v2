@@ -33,6 +33,7 @@ jobs:
 
           # Copy all files except sensitive ones
           cp index.html _site/
+          cp admin.html _site/
           cp styles.css _site/
           cp script.js _site/
           cp README.md _site/

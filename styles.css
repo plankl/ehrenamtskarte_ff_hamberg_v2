@@ -24,16 +24,29 @@ body {
     line-height: 1.6;
     background: linear-gradient(135deg, #1e3c72, #2a5298);
     min-height: 100vh;
-    padding: 20px;
+    padding: 10px;
+}
+
+/* Mobile First Responsive Design */
+@media (min-width: 768px) {
+    body {
+        padding: 20px;
+    }
 }
 
 .container {
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
     background: white;
     border-radius: 15px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     overflow: hidden;
+}
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 800px;
+    }
 }
 
 /* Header */
@@ -665,4 +678,192 @@ textarea {
     color: #495057;
     border: 1px solid #dee2e6;
     display: block;
+}
+
+/* ========================================= */
+/* RESPONSIVE MOBILE OPTIMIZATIONS */
+/* ========================================= */
+
+/* Mobile specific improvements */
+@media (max-width: 767px) {
+    /* Header adjustments */
+    header {
+        padding: 20px 15px;
+    }
+    
+    .logo {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 10px;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+    }
+    
+    header p {
+        font-size: 0.9rem;
+    }
+    
+    /* Form improvements for mobile */
+    .form-container {
+        padding: 15px;
+    }
+    
+    .form-section {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+    }
+    
+    .form-section h3 {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+    
+    /* Make form fields more touch-friendly */
+    input, select, textarea {
+        padding: 14px 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        border-radius: 12px;
+    }
+    
+    /* Improve checkbox and radio inputs */
+    input[type="checkbox"], input[type="radio"] {
+        width: auto;
+        margin-right: 8px;
+        transform: scale(1.2);
+    }
+    
+    /* Button improvements */
+    .btn {
+        padding: 14px 20px;
+        font-size: 1rem;
+        border-radius: 12px;
+        touch-action: manipulation; /* Improves tap response */
+    }
+    
+    .btn-group {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn-group .btn {
+        width: 100%;
+    }
+    
+    /* Modal improvements for mobile */
+    .modal-content {
+        margin: 10px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 15px;
+    }
+    
+    .modal-header {
+        padding: 15px;
+    }
+    
+    .modal-body {
+        padding: 15px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .modal-footer {
+        padding: 15px;
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+    
+    .modal-footer .btn {
+        width: 100%;
+        margin: 0;
+    }
+    
+    /* Status messages */
+    .status-message {
+        padding: 12px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        margin: 10px 0;
+    }
+    
+    /* Progress indicator */
+    .progress-steps {
+        margin-bottom: 20px;
+    }
+    
+    .step {
+        font-size: 0.8rem;
+        padding: 8px 12px;
+    }
+    
+    /* Qualification checkboxes in grid */
+    .qualification-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .qualification-item {
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .qualification-item label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+}
+
+/* Tablet specific adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .container {
+        max-width: 700px;
+    }
+    
+    .btn-group {
+        justify-content: center;
+    }
+    
+    .qualification-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Desktop enhancements */
+@media (min-width: 1025px) {
+    .qualification-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .logo {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Dark mode support (if user prefers) */
+@media (prefers-color-scheme: dark) {
+    /* Keep light theme for official government forms */
+    /* But we could add subtle dark mode touches */
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
