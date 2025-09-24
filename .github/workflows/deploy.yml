@@ -39,7 +39,7 @@ jobs:
 
           # Create config.js with secrets injection
           ACCESS_PASSWORD="${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}"
-          
+
           cat > _site/config.js << EOF
           // GitHub Configuration - Auto-generated during deployment
           window.GITHUB_CONFIG = {
@@ -51,12 +51,14 @@ jobs:
               accessPassword: '${ACCESS_PASSWORD:-FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER}'
           };
           EOF
-          
+
           if [ -n "$ACCESS_PASSWORD" ]; then
             echo "✅ Feuerwehr access password configured"
           else
             echo "⚠️ FEUERWEHR_ACCESS_PASSWORD secret not set - password validation will be skipped"
-          fi          # Create robots.txt for privacy
+          fi
+          
+          # Create robots.txt for privacy
           cat > _site/robots.txt << 'EOF'
           User-agent: *
           Disallow: /
