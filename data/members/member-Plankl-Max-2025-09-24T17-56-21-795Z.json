@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-09-24T17:56:21.781Z",
+  "person": {
+    "nachname": "Plankl",
+    "vorname": "Max",
+    "geburtsdatum": "1989-11-19",
+    "email": "sebastian.plankl@gmail.com",
+    "telefon": "0491711221334"
+  },
+  "adresse": {
+    "strasse": "Rascher Str. 3b",
+    "hausnummer": "",
+    "plz": "92363",
+    "ort": "Hamberg"
+  },
+  "qualifikationen": {
+    "mta_absolviert": false,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  },
+  "consent": {
+    "datenschutz": false
+  },
+  "meta": {
+    "accessVerified": false
+  }
+}
