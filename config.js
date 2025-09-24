@@ -4,7 +4,8 @@ window.GITHUB_CONFIG = {
     repoOwner: 'plankl',
     repoName: 'ehrenamtskarte_ff_hamberg_v2',
     dataBranch: 'data',
-    dataFolder: 'data'
+    dataFolder: 'data',
+    accessPassword: 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER' // Will be replaced during deployment
 };
 window.GITHUB_CONFIG = window.GITHUB_CONFIG || {
     tokenConfigured: false,

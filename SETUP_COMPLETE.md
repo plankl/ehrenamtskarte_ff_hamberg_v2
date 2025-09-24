@@ -45,10 +45,20 @@ git checkout main
 ### 4. Repository Secrets konfigurieren
 
 1. **Repository** → **Settings** → **Secrets and variables** → **Actions**
-2. **New repository secret**:
+
+2. **Erstes Secret - GitHub Token**:
+   - **New repository secret**
    - **Name**: `DATA_TRANSFER_TOKEN`
    - **Value**: Ihr Personal Access Token
-3. **Add secret**
+   - **Add secret**
+
+3. **Zweites Secret - Feuerwehr Passwort**:
+   - **New repository secret**
+   - **Name**: `FEUERWEHR_ACCESS_PASSWORD`
+   - **Value**: Das geheime Passwort für Feuerwehr-Mitglieder
+   - **Add secret**
+
+💡 **Tipp**: Wählen Sie ein sicheres Passwort, das Sie an alle berechtigten Feuerwehr-Mitglieder weitergeben können.
 
 ### 5. GitHub Pages aktivieren
 
@@ -199,10 +209,12 @@ cat data/logs/processing-$(date +%Y-%m-%d).log
 - [ ] Data Branch erstellt
 - [ ] Personal Access Token generiert
 - [ ] Repository Secret `DATA_TRANSFER_TOKEN` gesetzt
+- [ ] Repository Secret `FEUERWEHR_ACCESS_PASSWORD` gesetzt
 - [ ] GitHub Pages aktiviert (Source: GitHub Actions)
 - [ ] Branch Protection für `data` aktiviert
 - [ ] Erstes Deployment erfolgreich
 - [ ] Website erreichbar
+- [ ] Feuerwehr-Passwort funktioniert
 - [ ] Testformular ausgefüllt und gesendet
 - [ ] Daten im `data` Branch angekommen
 

@@ -45,9 +45,18 @@ jobs:
               repoOwner: 'plankl',
               repoName: 'ehrenamtskarte_ff_hamberg_v2',
               dataBranch: 'data',
-              dataFolder: 'data'
+              dataFolder: 'data',
+              accessPassword: 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER' // Will be replaced with actual password
           };
           EOF
+          
+          # Replace password placeholder with actual secret (if available)
+          if [ -n "${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}" ]; then
+            sed -i 's/FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER/${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}/g' _site/config.js
+            echo "✅ Feuerwehr access password configured"
+          else
+            echo "⚠️ FEUERWEHR_ACCESS_PASSWORD secret not set - password validation will be skipped"
+          fi
 
           # Create robots.txt for privacy
           cat > _site/robots.txt << 'EOF'

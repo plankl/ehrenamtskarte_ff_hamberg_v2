@@ -85,12 +85,36 @@ class FirefighterDataManager {
             this.form.reportValidity();
             return false;
         }
+        
         // Ensure Datenschutzzustimmung
         const ds = document.getElementById('datenschutz');
         if (!ds.checked) {
             this.setStatus('Bitte stimmen Sie der Datenverarbeitung zu.', 'error');
             return false;
         }
+        
+        // Validate access password
+        const accessPassword = this.value('access_password');
+        const configPassword = window.GITHUB_CONFIG?.accessPassword;
+        
+        if (configPassword && configPassword !== 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER') {
+            if (!accessPassword) {
+                this.setStatus('Bitte geben Sie das Feuerwehr-Passwort ein.', 'error');
+                return false;
+            }
+            if (accessPassword !== configPassword) {
+                this.setStatus('❌ Falsches Feuerwehr-Passwort. Bitte wenden Sie sich an die Feuerwehr-Leitung.', 'error');
+                return false;
+            }
+        } else {
+            // Fallback: Basic validation if no password configured
+            if (!accessPassword) {
+                this.setStatus('Bitte geben Sie das Feuerwehr-Passwort ein.', 'error');
+                return false;
+            }
+            console.warn('⚠️ No access password configured in secrets - basic validation only');
+        }
+        
         return true;
     }
 
