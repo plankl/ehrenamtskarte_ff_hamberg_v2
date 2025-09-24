@@ -47,19 +47,61 @@ class FirefighterDataManager {
 
     checkTokenConfiguration() {
         const token = this.getGitHubToken(false);
-        if (!token || token === 'GITHUB_TOKEN_PLACEHOLDER') {
-            console.warn('⚠️ GitHub token not configured. Submission may prompt for token.');
+        const password = window.GITHUB_CONFIG?.accessPassword;
+        
+        if (!token || token === 'GITHUB_TOKEN_PLACEHOLDER' || token === 'REQUIRES_USER_TOKEN') {
+            console.warn('⚠️ GitHub token not configured. Submission will prompt for token.');
+            this.setStatus('ℹ️ Beim ersten Absenden werden Sie nach Ihrem GitHub Token gefragt.', 'info');
         } else {
             console.log('✅ GitHub token available');
+        }
+        
+        if (!password || password === 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER') {
+            console.warn('⚠️ No access password configured in secrets - basic validation only');
+            this.setStatus('⚠️ Feuerwehr-Passwort nicht konfiguriert - Grundvalidierung aktiv.', 'info');
+        } else {
+            console.log('✅ Feuerwehr access password configured');
         }
     }
 
     getGitHubToken(allowPrompt = true) {
-        if (window.GITHUB_CONFIG && window.GITHUB_CONFIG.token &&
-            window.GITHUB_CONFIG.token !== 'GITHUB_TOKEN_PLACEHOLDER') {
-            return window.GITHUB_CONFIG.token;
+        // Check if token is already stored in session
+        let token = sessionStorage.getItem('ff_hamberg_github_token');
+        if (token && token !== 'GITHUB_TOKEN_PLACEHOLDER') {
+            return token;
         }
-        return allowPrompt ? (window.prompt('Bitte geben Sie Ihr GitHub Personal Access Token ein:') || '').trim() : '';
+        
+        // Check config
+        if (window.GITHUB_CONFIG && window.GITHUB_CONFIG.token &&
+            window.GITHUB_CONFIG.token !== 'GITHUB_TOKEN_PLACEHOLDER' &&
+            window.GITHUB_CONFIG.token !== 'REQUIRES_USER_TOKEN') {
+            token = window.GITHUB_CONFIG.token;
+            sessionStorage.setItem('ff_hamberg_github_token', token);
+            return token;
+        }
+        
+        // Prompt user with better instructions
+        if (allowPrompt) {
+            const message = `🔐 GitHub Personal Access Token benötigt
+
+Für die sichere Datenübertragung benötigen wir Ihr GitHub Token.
+
+📋 So erhalten Sie ein Token:
+1. Gehen Sie zu: github.com → Settings → Developer settings
+2. Personal access tokens → Generate new token (classic)
+3. Scopes: 'repo' und 'workflow' auswählen
+4. Token kopieren und hier einfügen
+
+Token eingeben:`;
+            
+            token = (window.prompt(message) || '').trim();
+            if (token) {
+                sessionStorage.setItem('ff_hamberg_github_token', token);
+            }
+            return token;
+        }
+        
+        return '';
     }
 
     getRepoInfo() {
@@ -218,7 +260,18 @@ class FirefighterDataManager {
 
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || res.statusText);
+                
+                if (res.status === 401) {
+                    // Clear stored token if unauthorized
+                    sessionStorage.removeItem('ff_hamberg_github_token');
+                    throw new Error('GitHub Token ungültig oder abgelaufen. Bitte versuchen Sie es erneut - Sie werden nach einem neuen Token gefragt.');
+                }
+                
+                if (res.status === 404 && err.message?.includes('Branch')) {
+                    throw new Error('Data Branch nicht gefunden. Bitte kontaktieren Sie den Administrator.');
+                }
+                
+                throw new Error(err.message || `HTTP ${res.status}: ${res.statusText}`);
             }
 
             // Trigger data processing (optional webhook or action)

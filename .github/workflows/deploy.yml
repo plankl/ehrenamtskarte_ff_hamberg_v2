@@ -37,8 +37,10 @@ jobs:
           cp script.js _site/
           cp README.md _site/
 
-          # Create config.js with token placeholder (for security)
-          cat > _site/config.js << 'EOF'
+          # Create config.js with secrets injection
+          ACCESS_PASSWORD="${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}"
+          
+          cat > _site/config.js << EOF
           // GitHub Configuration - Auto-generated during deployment
           window.GITHUB_CONFIG = {
               token: 'REQUIRES_USER_TOKEN', // User will be prompted for token
@@ -46,19 +48,15 @@ jobs:
               repoName: 'ehrenamtskarte_ff_hamberg_v2',
               dataBranch: 'data',
               dataFolder: 'data',
-              accessPassword: 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER' // Will be replaced with actual password
+              accessPassword: '${ACCESS_PASSWORD:-FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER}'
           };
           EOF
           
-          # Replace password placeholder with actual secret (if available)
-          if [ -n "${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}" ]; then
-            sed -i 's/FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER/${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}/g' _site/config.js
+          if [ -n "$ACCESS_PASSWORD" ]; then
             echo "✅ Feuerwehr access password configured"
           else
             echo "⚠️ FEUERWEHR_ACCESS_PASSWORD secret not set - password validation will be skipped"
-          fi
-
-          # Create robots.txt for privacy
+          fi          # Create robots.txt for privacy
           cat > _site/robots.txt << 'EOF'
           User-agent: *
           Disallow: /

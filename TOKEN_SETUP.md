@@ -41,17 +41,10 @@ FF Hamberg Data Transfer
 1. **Gehe zu deinem Repository** `ehrenamtskarte_ff_hamberg_v2`
 2. **Settings** → **Secrets and variables** → **Actions**
 
-**Secret 1: GitHub Token**
-3. **New repository secret**
-4. **Name:** `DATA_TRANSFER_TOKEN`
-5. **Secret:** Füge dein kopiertes Token ein
-6. **Add secret**
+**Secret 1: GitHub Token** 3. **New repository secret** 4. **Name:** `DATA_TRANSFER_TOKEN` 5. **Secret:** Füge dein kopiertes Token ein 6. **Add secret**
 
 **Secret 2: Feuerwehr Passwort**  
-7. **New repository secret**
-8. **Name:** `FEUERWEHR_ACCESS_PASSWORD`
-9. **Secret:** Ein sicheres Passwort für Feuerwehr-Mitglieder (z.B. `Hamberg2025!`)
-10. **Add secret**
+7. **New repository secret** 8. **Name:** `FEUERWEHR_ACCESS_PASSWORD` 9. **Secret:** Ein sicheres Passwort für Feuerwehr-Mitglieder (z.B. `Hamberg2025!`) 10. **Add secret**
 
 ⚠️ **Wichtig**: Beide Secrets werden benötigt! Das Passwort teilen Sie nur mit berechtigten Feuerwehr-Mitgliedern.
 

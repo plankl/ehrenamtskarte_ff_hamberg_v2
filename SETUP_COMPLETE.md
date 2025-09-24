@@ -47,6 +47,7 @@ git checkout main
 1. **Repository** → **Settings** → **Secrets and variables** → **Actions**
 
 2. **Erstes Secret - GitHub Token**:
+
    - **New repository secret**
    - **Name**: `DATA_TRANSFER_TOKEN`
    - **Value**: Ihr Personal Access Token
