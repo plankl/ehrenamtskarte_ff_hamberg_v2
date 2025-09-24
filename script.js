@@ -81,15 +81,14 @@ class TabManager {
 class FirefighterDataManager {
     constructor() {
         this.form = document.getElementById('memberForm');
-        this.statusOverlay = document.getElementById('statusMessage');
+        this.statusOverlay = document.getElementById('statusOverlay');
         
         // Modal elements - updated selectors
-        this.modal = document.getElementById('previewModal');
-        this.modalClose = document.getElementById('modalClose');
-        this.modalEditBtn = document.getElementById('modalEditBtn');
-        this.modalConfirmBtn = document.getElementById('modalConfirmBtn');
-        this.previewContent = document.getElementById('previewContent');
-
+        this.modal = document.getElementById('confirmModal');
+        this.modalTitle = document.getElementById('modalTitle');
+        this.modalMessage = document.getElementById('modalMessage');
+        this.modalConfirmBtn = document.getElementById('confirmButton');
+        
         // Configuration
         this.config = window.GITHUB_CONFIG || {};
         
@@ -97,9 +96,11 @@ class FirefighterDataManager {
     }
 
     init() {
-        this.initializeEventListeners();
-        this.checkTokenConfiguration();
-        this.restoreDraft();
+        if (this.form) {
+            this.initializeEventListeners();
+            this.checkTokenConfiguration();
+            this.restoreDraft();
+        }
         console.log('🚒 Feuerwehr Hamberg - System initialisiert');
     }
 
@@ -118,15 +119,11 @@ class FirefighterDataManager {
     }
 
     initializeEventListeners() {
-        this.form.addEventListener('submit', (e) => this.handleSubmit(e));
-        this.previewBtn.addEventListener('click', () => this.showPreview());
-
-        if (this.modalClose) this.modalClose.addEventListener('click', () => this.hideModal());
-        if (this.modalEditBtn) this.modalEditBtn.addEventListener('click', () => this.hideModal());
-        if (this.modalConfirmBtn) this.modalConfirmBtn.addEventListener('click', () => this.enableSubmit());
-
-        // Auto-save draft on input
-        this.form.addEventListener('input', () => this.saveDraft());
+        if (this.form) {
+            this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+            // Auto-save draft on input
+            this.form.addEventListener('input', () => this.saveDraft());
+        }
     }
 
     checkTokenConfiguration() {
@@ -223,15 +220,8 @@ Token eingeben:`;
             return false;
         }
         
-        // Ensure Datenschutzzustimmung
-        const ds = document.getElementById('datenschutz');
-        if (!ds.checked) {
-            this.setStatus('Bitte stimmen Sie der Datenverarbeitung zu.', 'error');
-            return false;
-        }
-        
         // Validate access password
-        const accessPassword = this.value('access_password');
+        const accessPassword = this.value('passwort');
         const configPassword = window.GITHUB_CONFIG?.accessPassword;
         
         if (configPassword && configPassword !== 'FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER') {
@@ -481,36 +471,72 @@ Token eingeben:`;
     }
 
     setStatus(message, type = 'info') {
-        if (!this.statusBox) return;
-        this.statusBox.textContent = message;
-        this.statusBox.className = 'status-message';
-        this.statusBox.classList.add(type);
+        if (!this.statusOverlay) return;
+        
+        this.statusOverlay.textContent = message;
+        this.statusOverlay.className = `status-overlay show ${type}`;
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (this.statusOverlay) {
+                this.statusOverlay.classList.remove('show');
+            }
+        }, 5000);
+        
+        console.log(`Status (${type}): ${message}`);
     }
 
     saveDraft() {
+        if (!this.form) return;
+        
         const formData = new FormData(this.form);
         const data = {};
-        for (const [k, v] of formData.entries()) data[k] = v;
-        // Also include checkbox states explicitly
-        ['mta_absolviert','dienstjahre_25','dienstjahre_40','datenschutz'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) data[id] = el.checked ? 'on' : '';
-        });
+        for (const [k, v] of formData.entries()) {
+            data[k] = v;
+        }
+        
+        // Save qualifications checkboxes
+        const qualCheckboxes = this.form.querySelectorAll('input[name="qualifikationen"]:checked');
+        data.qualifikationen = Array.from(qualCheckboxes).map(cb => cb.value);
+        
         localStorage.setItem('ff_hamberg_v2_draft', JSON.stringify(data));
     }
 
     restoreDraft() {
+        if (!this.form) return;
+        
         const raw = localStorage.getItem('ff_hamberg_v2_draft');
         if (!raw) return;
+        
         try {
             const data = JSON.parse(raw);
+            
+            // Restore regular form fields
             Object.entries(data).forEach(([k, v]) => {
+                if (k === 'qualifikationen') return; // Handle separately
+                
                 const el = this.form.querySelector(`[name="${k}"]`);
                 if (!el) return;
-                if (el.type === 'checkbox') el.checked = v === 'on'; else el.value = v;
+                
+                if (el.type === 'checkbox') {
+                    el.checked = v === 'on' || v === true;
+                } else {
+                    el.value = v;
+                }
             });
+            
+            // Restore qualifications
+            if (data.qualifikationen && Array.isArray(data.qualifikationen)) {
+                data.qualifikationen.forEach(value => {
+                    const checkbox = this.form.querySelector(`input[name="qualifikationen"][value="${value}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
             console.log('✅ Entwurf wiederhergestellt');
-        } catch {}
+        } catch (error) {
+            console.warn('Fehler beim Wiederherstellen des Entwurfs:', error);
+        }
     }
 
     clearDraft() { localStorage.removeItem('ff_hamberg_v2_draft'); }
