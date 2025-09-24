@@ -564,7 +564,7 @@ body {
   }
 }
 
-.form-container, .info-container {
+.form-container {
   background: var(--bg-card);
   border-radius: var(--radius-2xl);
   padding: var(--space-8);
@@ -573,12 +573,12 @@ body {
   box-shadow: var(--shadow-xl);
 }
 
-.form-header, .info-header {
+.form-header {
   text-align: center;
   margin-bottom: var(--space-10);
 }
 
-.form-header h2, .info-header h2 {
+.form-header h2 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-3xl);
   font-weight: 700;
@@ -586,7 +586,7 @@ body {
   margin-bottom: var(--space-2);
 }
 
-.form-header p, .info-header p {
+.form-header p {
   color: var(--text-muted);
   font-size: var(--font-size-lg);
 }
@@ -811,7 +811,7 @@ body {
 }
 
 /* ========================================= */
-/* BUTTONS & FORM ACTIONS */
+/* FORM ACTIONS */
 /* ========================================= */
 
 .form-actions {
@@ -895,8 +895,35 @@ body {
 }
 
 /* ========================================= */
-/* INFO GRID */
+/* INFO SECTION */
 /* ========================================= */
+
+.info-container {
+  background: var(--bg-card);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-8);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-xl);
+}
+
+.info-header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.info-header h2 {
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.info-header p {
+  color: var(--text-muted);
+  font-size: var(--font-size-lg);
+}
 
 .info-grid {
   display: grid;
@@ -1139,7 +1166,7 @@ body {
     height: 1px;
   }
   
-  .form-container, .info-container {
+  .form-container {
     padding: var(--space-6) var(--space-4);
   }
   
@@ -1178,6 +1205,7 @@ body {
   }
 }
 
+/* Focus management for better accessibility */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1190,6 +1218,7 @@ body {
   border: 0;
 }
 
+/* High contrast mode support */
 @media (prefers-contrast: high) {
   .btn {
     border: 2px solid currentColor;
@@ -1200,6 +1229,7 @@ body {
   }
 }
 
+/* Print styles */
 @media print {
   .theme-toggle,
   .bg-animation,

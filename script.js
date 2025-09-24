@@ -1,22 +1,106 @@
-// Feuerwehr Hamberg - JavaScript für Datenverarbeitung (v2 UI)
+// ========================================= //
+// FEUERWEHR HAMBERG - MODERN JAVASCRIPT     //
+// ========================================= //
+
+// Theme Management System
+class ThemeManager {
+    constructor() {
+        this.currentTheme = localStorage.getItem('ff-theme') || 'light';
+        this.init();
+    }
+
+    init() {
+        this.applyTheme(this.currentTheme);
+        this.setupToggle();
+    }
+
+    applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('ff-theme', theme);
+        this.currentTheme = theme;
+        
+        // Update meta theme-color for mobile browsers
+        const metaTheme = document.querySelector('meta[name="theme-color"]');
+        if (metaTheme) {
+            metaTheme.content = theme === 'dark' ? '#1a202c' : '#e53e3e';
+        }
+    }
+
+    toggle() {
+        const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+        this.applyTheme(newTheme);
+    }
+
+    setupToggle() {
+        const toggleBtn = document.getElementById('themeToggle');
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', () => this.toggle());
+        }
+    }
+}
+
+// Enhanced Tab System
+class TabManager {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetTab = btn.dataset.tab;
+                this.showTab(targetTab);
+            });
+        });
+    }
+    
+    showTab(tabName) {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Remove active classes
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        const activeBtn = document.querySelector(`[data-tab="${tabName}"]`);
+        const activeContent = document.getElementById(tabName);
+        
+        if (activeBtn && activeContent) {
+            activeBtn.classList.add('active');
+            activeContent.classList.add('active');
+        }
+    }
+}
+
+// Main Firefighter Data Manager - Enhanced
 class FirefighterDataManager {
     constructor() {
         this.form = document.getElementById('memberForm');
-        this.statusBox = document.getElementById('status');
-        this.previewBtn = document.querySelector('.preview-btn');
-        this.submitBtn = document.querySelector('.submit-btn');
-
-        // Modal elements
+        this.statusOverlay = document.getElementById('statusMessage');
+        
+        // Modal elements - updated selectors
         this.modal = document.getElementById('previewModal');
-        this.modalClose = this.modal?.querySelector('.close');
-        this.modalEditBtn = this.modal?.querySelector('#editData');
-        this.modalConfirmBtn = this.modal?.querySelector('#confirmSubmit');
-        this.previewDataBox = document.getElementById('previewData');
+        this.modalClose = document.getElementById('modalClose');
+        this.modalEditBtn = document.getElementById('modalEditBtn');
+        this.modalConfirmBtn = document.getElementById('modalConfirmBtn');
+        this.previewContent = document.getElementById('previewContent');
 
+        // Configuration
+        this.config = window.GITHUB_CONFIG || {};
+        
+        this.init();
+    }
+
+    init() {
         this.initializeEventListeners();
         this.checkTokenConfiguration();
         this.restoreDraft();
-        this.setupTabs();
+        console.log('🚒 Feuerwehr Hamberg - System initialisiert');
     }
 
     setupTabs() {
@@ -432,7 +516,49 @@ Token eingeben:`;
     clearDraft() { localStorage.removeItem('ff_hamberg_v2_draft'); }
 }
 
+// Global functions for easy access
+function toggleTheme() {
+    if (window.themeManager) {
+        window.themeManager.toggle();
+    }
+}
+
+function showTab(tabName) {
+    if (window.tabManager) {
+        window.tabManager.showTab(tabName);
+    }
+}
+
+function resetForm() {
+    if (window.firefighterDataManager && window.firefighterDataManager.form) {
+        window.firefighterDataManager.form.reset();
+        window.firefighterDataManager.clearDraft();
+        console.log('📝 Formular zurückgesetzt');
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('confirmModal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Initialize all systems when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new FirefighterDataManager();
-    console.log('🚒 Feuerwehr Hamberg - System initialisiert');
+    // Initialize Theme Manager
+    window.themeManager = new ThemeManager();
+    
+    // Initialize Tab Manager
+    window.tabManager = new TabManager();
+    
+    // Initialize Main App
+    window.firefighterDataManager = new FirefighterDataManager();
+    
+    console.log('🚒 Feuerwehr Hamberg - Alle Systeme initialisiert');
+    
+    // Debug: Check if elements exist
+    console.log('Theme Toggle Button:', document.getElementById('themeToggle'));
+    console.log('Tab Buttons:', document.querySelectorAll('.tab-btn'));
+    console.log('Tab Contents:', document.querySelectorAll('.tab-content'));
 });

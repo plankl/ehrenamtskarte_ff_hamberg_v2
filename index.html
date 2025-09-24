@@ -1,251 +1,328 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feuerwehr Hamberg - Mitgliederdaten Erfassung</title>
+    <title>🚒 Feuerwehr Hamberg - Ehrenamtskarte</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚒</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#E53E3E">
+    <meta name="description" content="Registrierung für die Ehrenamtskarte - Feuerwehr Hamberg">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🚒 Feuerwehr Hamberg</h1>
-            <h2>Mitgliederdaten Erfassung</h2>
-            <p>Bitte füllen Sie alle Felder vollständig aus</p>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="fire-particle"></div>
+        <div class="fire-particle"></div>
+        <div class="fire-particle"></div>
+        <div class="fire-particle"></div>
+        <div class="fire-particle"></div>
+        <div class="bg-gradient"></div>
+    </div>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Theme wechseln">
+        <div class="toggle-track">
+            <div class="toggle-thumb">
+                <span class="toggle-icon light-icon">☀️</span>
+                <span class="toggle-icon dark-icon">🌙</span>
+            </div>
+        </div>
+    </button>
+
+    <!-- Main App Container -->
+    <div class="app-container">
+        <!-- Hero Header -->
+        <header class="hero-section">
+            <div class="hero-content">
+                <div class="logo-container">
+                    <div class="logo-badge">
+                        <div class="logo-icon">🚒</div>
+                        <div class="logo-pulse"></div>
+                    </div>
+                </div>
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="title-primary">Feuerwehr Hamberg</span>
+                        <span class="title-secondary">Ehrenamtskarte Registrierung</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Registrieren Sie sich für die Ehrenamtskarte und profitieren Sie von exklusiven Vorteilen
+                    </p>
+                </div>
+                <div class="hero-badges">
+                    <div class="badge-item">
+                        <div class="badge-icon">👥</div>
+                        <div class="badge-text">50+ Aktive</div>
+                    </div>
+                    <div class="badge-divider"></div>
+                    <div class="badge-item">
+                        <div class="badge-icon">⏰</div>
+                        <div class="badge-text">24/7 Bereit</div>
+                    </div>
+                    <div class="badge-divider"></div>
+                    <div class="badge-item">
+                        <div class="badge-icon">❤️</div>
+                        <div class="badge-text">Ehrenamt</div>
+                    </div>
+                </div>
+            </div>
         </header>
 
-        <!-- Tab Navigation -->
-        <div class="tab-navigation">
-            <button type="button" class="tab-btn active" data-tab="formular">📝 Formular</button>
-            <button type="button" class="tab-btn" data-tab="infos">ℹ️ Infos</button>
-        </div>
-
-        <!-- Tab Content -->
-        <div class="tab-content">
-            <!-- Formular Tab -->
-            <div id="formular" class="tab-pane active">
-                <form id="memberForm" class="member-form">
-            <div class="form-group">
-                <label for="nachname">Nachname *</label>
-                <input type="text" id="nachname" name="nachname" required>
+        <!-- Navigation -->
+        <nav class="tab-navigation">
+            <div class="nav-container">
+                <button type="button" class="tab-btn active" data-tab="registration">
+                    <span class="tab-icon">📝</span>
+                    <span class="tab-text">Registrierung</span>
+                    <div class="tab-indicator"></div>
+                </button>
+                <button type="button" class="tab-btn" data-tab="info">
+                    <span class="tab-icon">ℹ️</span>
+                    <span class="tab-text">Informationen</span>
+                    <div class="tab-indicator"></div>
+                </button>
             </div>
+        </nav>
 
-            <div class="form-group">
-                <label for="vorname">Vorname *</label>
-                <input type="text" id="vorname" name="vorname" required>
-            </div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Registration Tab -->
+            <div id="registration" class="tab-content active">
+                <div class="form-container">
+                    <div class="form-header">
+                        <h2>Registrierung für die Ehrenamtskarte</h2>
+                        <p>Bitte füllen Sie alle Felder sorgfältig aus</p>
+                    </div>
 
-            <div class="form-group">
-                <label for="geburtsdatum">Geburtsdatum *</label>
-                <input type="date" id="geburtsdatum" name="geburtsdatum" required>
-            </div>
+                    <form id="memberForm" class="modern-form">
+                        <!-- Persönliche Daten -->
+                        <section class="form-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">👤</span>
+                                Persönliche Daten
+                            </h3>
+                            <p class="section-subtitle">Ihre grundlegenden Informationen</p>
+                            
+                            <div class="form-grid">
+                                <div class="form-field">
+                                    <label class="field-label" for="nachname">Nachname *</label>
+                                    <input type="text" id="nachname" name="nachname" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">Ihr Familienname</span>
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label class="field-label" for="vorname">Vorname *</label>
+                                    <input type="text" id="vorname" name="vorname" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">Ihr Vorname</span>
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label class="field-label" for="geburtsdatum">Geburtsdatum *</label>
+                                    <input type="date" id="geburtsdatum" name="geburtsdatum" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">TT.MM.JJJJ</span>
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label class="field-label" for="telefon">Telefonnummer</label>
+                                    <input type="tel" id="telefon" name="telefon" class="field-input">
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">Optional für Rückfragen</span>
+                                </div>
+                                
+                                <div class="form-field full-width">
+                                    <label class="field-label" for="email">E-Mail-Adresse *</label>
+                                    <input type="email" id="email" name="email" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">Für wichtige Benachrichtigungen</span>
+                                </div>
+                            </div>
+                        </section>
 
-            <div class="form-group">
-                <label for="email">E-Mail Adresse *</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+                        <!-- Adresse -->
+                        <section class="form-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">🏠</span>
+                                Adresse
+                            </h3>
+                            <p class="section-subtitle">Ihre Wohnanschrift</p>
+                            
+                            <div class="form-grid">
+                                <div class="form-field full-width">
+                                    <label class="field-label" for="strasse">Straße und Hausnummer *</label>
+                                    <input type="text" id="strasse" name="strasse" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">z.B. Musterstraße 123</span>
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label class="field-label" for="plz">Postleitzahl *</label>
+                                    <input type="text" id="plz" name="plz" class="field-input" pattern="[0-9]{5}" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">5-stellige PLZ</span>
+                                </div>
+                                
+                                <div class="form-field">
+                                    <label class="field-label" for="ort">Ort *</label>
+                                    <input type="text" id="ort" name="ort" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">Ihr Wohnort</span>
+                                </div>
+                            </div>
+                        </section>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="strasse">Straße *</label>
-                    <input type="text" id="strasse" name="strasse" required>
+                        <!-- Qualifikationen -->
+                        <section class="form-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">🎖️</span>
+                                Qualifikationen & Ausbildungen
+                            </h3>
+                            <p class="section-subtitle">Wählen Sie Ihre vorhandenen Qualifikationen aus</p>
+                            
+                            <div class="qualifications-container">
+                                <div class="qual-category">
+                                    <div class="qual-grid">
+                                        <label class="qual-item">
+                                            <input type="checkbox" name="qualifikationen" value="Truppmann">
+                                            <div class="qual-checkbox"></div>
+                                            <span class="qual-text">Truppmann</span>
+                                        </label>
+                                        <label class="qual-item">
+                                            <input type="checkbox" name="qualifikationen" value="25 Jahre aktiv">
+                                            <div class="qual-checkbox"></div>
+                                            <span class="qual-text">25 Jahre aktiv</span>
+                                        </label>
+                                        <label class="qual-item">
+                                            <input type="checkbox" name="qualifikationen" value="40 Jahre aktiv">
+                                            <div class="qual-checkbox"></div>
+                                            <span class="qual-text">40 Jahre aktiv</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Passwort -->
+                        <section class="form-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">🔐</span>
+                                Freischaltung
+                            </h3>
+                            <p class="section-subtitle">Passwort zur Übermittlung Ihrer Daten</p>
+                            
+                            <div class="form-grid">
+                                <div class="form-field full-width">
+                                    <label class="field-label" for="passwort">Übermittlungsschlüssel *</label>
+                                    <input type="password" id="passwort" name="passwort" class="field-input" required>
+                                    <div class="field-border"></div>
+                                    <span class="field-hint">Erhalten Sie von der Feuerwehrleitung</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                                <span class="btn-icon">🔄</span>
+                                Zurücksetzen
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-icon">📤</span>
+                                Daten übermitteln
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="hausnummer">Hausnummer *</label>
-                    <input type="text" id="hausnummer" name="hausnummer" required>
-                </div>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="plz">PLZ *</label>
-                    <input type="text" id="plz" name="plz" pattern="[0-9]{5}" required>
-                </div>
-                <div class="form-group">
-                    <label for="ort">Ort *</label>
-                    <input type="text" id="ort" name="ort" required>
-                </div>
-            </div>
+            <!-- Information Tab -->
+            <div id="info" class="tab-content">
+                <div class="info-container">
+                    <div class="info-header">
+                        <h2>Informationen zur Ehrenamtskarte</h2>
+                        <p>Alles was Sie über die Ehrenamtskarte wissen müssen</p>
+                    </div>
 
-            <div class="form-group">
-                <label for="telefon">Telefonnummer *</label>
-                <input type="tel" id="telefon" name="telefon" required>
-            </div>
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <span class="info-icon">🎫</span>
+                            <h3>Was ist die Ehrenamtskarte?</h3>
+                            <p>Die Ehrenamtskarte ist eine Anerkennungsform für Menschen, die sich ehrenamtlich engagieren und damit einen wichtigen Beitrag für das Gemeinwohl leisten.</p>
+                        </div>
 
-            <h3 class="section-title">🎖️ Qualifikationen & Dienstjahre</h3>
-            
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="mta_absolviert" name="mta_absolviert">
-                    MTA (Modulare Truppausbildung / Truppmannausbildung) absolviert
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="dienstjahre_25" name="dienstjahre_25">
-                    25 Jahre aktiv im Dienst
-                </label>
-            </div>
-
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="dienstjahre_40" name="dienstjahre_40">
-                    40 Jahre aktiv im Dienst
-                </label>
-            </div>
-
-            <h3 class="section-title">🔐 Zugangsschutz</h3>
-            
-            <div class="form-group">
-                <label for="access_password">Feuerwehr-Passwort *</label>
-                <input type="password" id="access_password" name="access_password" required 
-                       placeholder="Passwort zur Bestätigung der Mitgliedschaft">
-                <small class="form-hint">Dieses Passwort erhalten Sie von der Feuerwehr-Leitung</small>
-            </div>
-
-            <h3 class="section-title">✅ Bestätigung</h3>
-            
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="datenschutz" required>
-                    Ich stimme der Verarbeitung meiner Daten zu Verwaltungszwecken der Feuerwehr zu *
-                </label>
-            </div>
-
-            <button type="button" class="preview-btn">🔍 Daten überprüfen</button>
-            <button type="submit" class="submit-btn" style="display: none;">📤 Daten übermitteln</button>
-                </form>
-
-                <div id="status" class="status-message"></div>
-            </div>
-
-            <!-- Infos Tab -->
-            <div id="infos" class="tab-pane">
-                <div class="info-content">
-                    <h3>🎖️ Die Bayerische Ehrenamtskarte</h3>
-                    
-                    <div class="ehrenamtskarte-info"></div>
-                        <h4>📖 Was ist die Bayerische Ehrenamtskarte?</h4>
-                        <p>Die Bayerische Ehrenamtskarte ist eine Auszeichnung des Freistaats Bayern für Menschen, die sich in besonderem Maße ehrenamtlich engagieren. Sie wurde 2002 eingeführt und würdigt langjähriges und beispielhaftes ehrenamtliches Engagement.</p>
-                        
-                        <h4>✨ Ihre Vorteile mit der Ehrenamtskarte</h4>
-                        <ul>
-                            <li><strong>Kostenloses Parken:</strong> In vielen bayerischen Kommunen</li>
-                            <li><strong>Ermäßigungen:</strong> Bei Theatern, Museen, Konzerten und Veranstaltungen</li>
-                            <li><strong>Vergünstigungen:</strong> Bei über 3.000 Akzeptanzpartnern in ganz Bayern</li>
-                            <li><strong>Sportangebote:</strong> Reduzierte Preise bei Sportveranstaltungen und Schwimmbädern</li>
-                            <li><strong>Gastronomie:</strong> Rabatte in vielen Restaurants und Cafés</li>
-                            <li><strong>Freizeit:</strong> Vergünstigungen bei Freizeitparks und touristischen Attraktionen</li>
-                        </ul>
-
-                        <div class="external-links">
-                            <h4>🔗 Weitere Informationen</h4>
+                        <div class="info-card">
+                            <span class="info-icon">✅</span>
+                            <h3>Voraussetzungen</h3>
                             <ul>
-                                <li><a href="https://www.ehrenamtskarte.bayern.de/" target="_blank" rel="noopener">🌐 Offizielle Homepage der Bayerischen Ehrenamtskarte</a></li>
-                                <li><a href="https://www.ehrenamtskarte.bayern.de/akzeptanzpartner" target="_blank" rel="noopener">🏪 Akzeptanzpartner finden</a></li>
-                                <li><a href="https://www.ehrenamtskarte.bayern.de/vorteile" target="_blank" rel="noopener">💰 Alle Vorteile im Überblick</a></li>
+                                <li>Mindestens 16 Jahre alt</li>
+                                <li>Ehrenamtliche Tätigkeit seit mindestens 3 Jahren</li>
+                                <li>Mindestens 5 Stunden pro Woche oder 250 Stunden pro Jahr</li>
                             </ul>
                         </div>
-                    </div>
 
-                    <div class="feuerwehr-requirements">
-                        <h3>🚒 Voraussetzungen für Feuerwehrmitglieder im Landkreis Neumarkt</h3>
-                        
-                        <div class="requirements-section">
-                            <h4>⏰ Zeitliche Voraussetzungen</h4>
+                        <div class="info-card">
+                            <span class="info-icon">🎁</span>
+                            <h3>Vorteile</h3>
                             <ul>
-                                <li><strong>Mindestaktivität:</strong> 5 Jahre aktive Mitgliedschaft in der Feuerwehr</li>
-                                <li><strong>Wöchentlicher Aufwand:</strong> Durchschnittlich mindestens 5 Stunden pro Woche</li>
-                                <li><strong>Regelmäßigkeit:</strong> Kontinuierliche Teilnahme an Übungen und Einsätzen</li>
-                            </ul>
-
-                            <h4>🎯 Qualifikationsvoraussetzungen</h4>
-                            <ul>
-                                <li><strong>Grundausbildung:</strong> Erfolgreich abgeschlossene Modulare Truppausbildung (MTA)</li>
-                                <li><strong>Fortbildung:</strong> Regelmäßige Teilnahme an Weiterbildungsmaßnahmen</li>
-                                <li><strong>Führungsqualifikation:</strong> Zusätzliche Anerkennung für Führungskräfte</li>
-                            </ul>
-
-                            <h4>🏅 Besondere Anerkennungen</h4>
-                            <ul>
-                                <li><strong>25 Jahre Dienstzeit:</strong> Automatische Berechtigung zur Ehrenamtskarte</li>
-                                <li><strong>40 Jahre Dienstzeit:</strong> Ehrenamtskarte mit besonderen Vergünstigungen</li>
-                                <li><strong>Herausragende Verdienste:</strong> Bei außergewöhnlichem Engagement</li>
+                                <li>Vergünstigungen in Museen und Theatern</li>
+                                <li>Rabatte bei lokalen Partnern</li>
+                                <li>Kostenlose oder ermäßigte Kurse</li>
+                                <li>Besondere Angebote und Aktionen</li>
                             </ul>
                         </div>
-                    </div>
 
-                    <div class="application-process">
-                        <h3>📋 Antragsprozess</h3>
-                        <ol>
-                            <li><strong>Datenerfassung:</strong> Vollständiges Ausfüllen des Formulars auf der "Formular"-Seite</li>
-                            <li><strong>Prüfung:</strong> Überprüfung der Angaben durch die Feuerwehr-Leitung</li>
-                            <li><strong>Weiterleitung:</strong> Antragstellung beim Landkreis Neumarkt</li>
-                            <li><strong>Bearbeitung:</strong> Bearbeitungszeit ca. 4-6 Wochen</li>
-                            <li><strong>Ausgabe:</strong> Abholung der Karte bei der Gemeinde/Stadt</li>
-                        </ol>
-                    </div>
+                        <div class="info-card">
+                            <span class="info-icon">🔒</span>
+                            <h3>Datenschutz</h3>
+                            <p>Ihre Daten werden gemäß DSGVO verarbeitet und nur für die Beantragung der Ehrenamtskarte verwendet. Sie werden nicht an Dritte weitergegeben.</p>
+                        </div>
 
-                    <div class="technical-info">
-                        <h4>🔒 Datenschutz und Technik</h4>
-                        <ul>
-                            <li>Alle Daten werden sicher und verschlüsselt übertragen</li>
-                            <li>Speicherung erfolgt in einem geschützten GitHub Repository</li>
-                            <li>Zugriff nur für autorisierte Personen der Feuerwehr</li>
-                            <li>Datenverarbeitung erfolgt gemäß DSGVO</li>
-                            <li>📱 Die Website ist für mobile Geräte optimiert</li>
-                            <li>🔍 Duplikat-Prüfung verhindert Mehrfacheinträge</li>
-                        </ul>
-                    </div>
+                        <div class="info-card">
+                            <span class="info-icon">📋</span>
+                            <h3>Bearbeitungszeit</h3>
+                            <p>Nach der Übermittlung Ihrer Daten werden diese geprüft und die Ehrenamtskarte wird in der Regel innerhalb von 4-6 Wochen ausgestellt.</p>
+                        </div>
 
-                    <div class="data-formats">
-                        <h4>📊 Datenformate für Verwaltung</h4>
-                        <p>Die eingegebenen Daten werden automatisch in mehreren Formaten bereitgestellt:</p>
-                        <ul>
-                            <li><strong>📄 Einzeldateien:</strong> Jeder Eintrag als separate JSON-Datei</li>
-                            <li><strong>📋 Gesamtdatei:</strong> <code>all_members.json</code> - Alle Mitglieder in einer Datei</li>
-                            <li><strong>📈 CSV-Export:</strong> <code>members.csv</code> - Für Excel/Tabellenkalkulation</li>
-                            <li><strong>🌐 HTML-Übersicht:</strong> <code>members.html</code> - Webansicht mit Statistiken</li>
-                        </ul>
-                        <p class="info-note">💡 Alle Dateien werden automatisch nach jedem neuen Eintrag aktualisiert und sind über das GitHub Repository abrufbar.</p>
-                    </div>
-
-                    <div class="contact-info">
-                        <h4>📞 Kontakt und Unterstützung</h4>
-                        <p><strong>Bei Fragen zur Ehrenamtskarte oder dem Antragsprozess:</strong></p>
-                        <ul>
-                            <li>Wenden Sie sich an Ihre örtliche Feuerwehr-Leitung</li>
-                            <li>Kontakt zum Landkreis Neumarkt über die offizielle Website</li>
-                            <li>Technische Fragen zur Website an den Administrator</li>
-                        </ul>
+                        <div class="info-card">
+                            <span class="info-icon">💬</span>
+                            <h3>Kontakt</h3>
+                            <p>Bei Fragen wenden Sie sich gerne an die Feuerwehrleitung oder den Wehrführer der Feuerwehr Hamberg.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+    </div>
 
-        <!-- Data Preview Modal -->
-        <div id="previewModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>🔍 Datenvorschau</h3>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <p>Bitte überprüfen Sie Ihre Eingaben:</p>
-                    <div id="previewData"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="editData">✏️ Bearbeiten</button>
-                    <button type="button" class="btn btn-primary" id="confirmSubmit">✅ Bestätigen & Senden</button>
-                </div>
+    <!-- Modal for confirmations -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 id="modalTitle">Bestätigung</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Möchten Sie diese Aktion wirklich ausführen?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Abbrechen</button>
+                <button class="btn btn-primary" id="confirmButton">Bestätigen</button>
             </div>
         </div>
     </div>
 
-    <!-- Load configuration first, then main script -->
+    <!-- Status Messages -->
+    <div id="statusOverlay" class="status-overlay"></div>
+
+    <!-- Scripts -->
     <script src="config.js"></script>
     <script src="script.js"></script>
+    <script src="debug.js"></script>
 </body>
 </html>
