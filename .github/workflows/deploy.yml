@@ -39,17 +39,19 @@ jobs:
 
           # Create config.js with secrets injection
           ACCESS_PASSWORD="${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}"
+          MASTER_TOKEN="${{ secrets.DATA_TRANSFER_TOKEN }}"
 
           cat > _site/config.js << EOF
           // GitHub Configuration - Auto-generated during deployment
           window.GITHUB_CONFIG = {
-              token: 'REQUIRES_USER_TOKEN', // User will be prompted for token
+              token: '${MASTER_TOKEN:-GITHUB_TOKEN_PLACEHOLDER}', // Master token for all users
               repoOwner: 'plankl',
               repoName: 'ehrenamtskarte_ff_hamberg_v2',
               dataBranch: 'data',
               dataFolder: 'data',
               accessPassword: '${ACCESS_PASSWORD:-FEUERWEHR_ACCESS_PASSWORD_PLACEHOLDER}',
-              isDevelopment: false // Production deployment
+              isDevelopment: false, // Production deployment
+              usesMasterToken: true // All users share the same token
           };
           EOF
 

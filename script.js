@@ -48,8 +48,11 @@ class FirefighterDataManager {
     checkTokenConfiguration() {
         const token = this.getGitHubToken(false);
         const password = window.GITHUB_CONFIG?.accessPassword;
+        const usesMasterToken = window.GITHUB_CONFIG?.usesMasterToken;
         
-        if (!token || token === 'GITHUB_TOKEN_PLACEHOLDER' || token === 'REQUIRES_USER_TOKEN') {
+        if (usesMasterToken && token && token !== 'GITHUB_TOKEN_PLACEHOLDER') {
+            console.log('✅ Master GitHub token configured - keine Benutzer-Eingabe erforderlich');
+        } else if (!token || token === 'GITHUB_TOKEN_PLACEHOLDER' || token === 'REQUIRES_USER_TOKEN') {
             console.warn('⚠️ GitHub token not configured. Submission will prompt for token.');
             this.setStatus('ℹ️ Beim ersten Absenden werden Sie nach Ihrem GitHub Token gefragt.', 'info');
         } else {
@@ -67,6 +70,12 @@ class FirefighterDataManager {
     }
 
     getGitHubToken(allowPrompt = true) {
+        // If using master token, return it directly
+        if (window.GITHUB_CONFIG?.usesMasterToken && window.GITHUB_CONFIG.token &&
+            window.GITHUB_CONFIG.token !== 'GITHUB_TOKEN_PLACEHOLDER') {
+            return window.GITHUB_CONFIG.token;
+        }
+        
         // Check if token is already stored in session
         let token = sessionStorage.getItem('ff_hamberg_github_token');
         if (token && token !== 'GITHUB_TOKEN_PLACEHOLDER') {
