@@ -341,23 +341,56 @@ Token eingeben:`;
             qualifications: data.qualifikationen
         };
 
+        const logFileName = `processing-${new Date().toISOString().split('T')[0]}.log`;
         const logContent = JSON.stringify(logEntry, null, 2) + '\n';
-        const encodedLog = btoa(unescape(encodeURIComponent(logContent)));
-
+        
         try {
-            await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/data/logs/processing-${new Date().toISOString().split('T')[0]}.log`, {
+            // Try to get existing file first
+            let existingContent = '';
+            let sha = null;
+            
+            try {
+                const existingResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/data/logs/${logFileName}?ref=data`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (existingResponse.ok) {
+                    const existingData = await existingResponse.json();
+                    existingContent = atob(existingData.content) + '\n';
+                    sha = existingData.sha;
+                }
+            } catch (error) {
+                // File doesn't exist yet, that's fine
+                console.log('Creating new log file');
+            }
+            
+            const finalContent = existingContent + logContent;
+            const encodedLog = btoa(unescape(encodeURIComponent(finalContent)));
+
+            const body = {
+                message: `📊 Log: Member added - ${data.person.vorname} ${data.person.nachname}`,
+                content: encodedLog,
+                branch: 'data'
+            };
+            
+            if (sha) {
+                body.sha = sha;
+            }
+
+            await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/data/logs/${logFileName}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `token ${token}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/vnd.github.v3+json'
                 },
-                body: JSON.stringify({
-                    message: `📊 Log: Member added - ${data.person.vorname} ${data.person.nachname}`,
-                    content: encodedLog,
-                    branch: 'data'
-                })
+                body: JSON.stringify(body)
             });
+            
+            console.log('✅ Processing log updated successfully');
         } catch (error) {
             console.warn('Logging failed:', error.message);
         }
