@@ -45,3 +45,15 @@
     "dienstjahre_40": false
   }
 }
+
+{
+  "timestamp": "2025-09-25T20:01:01.611Z",
+  "action": "member_added",
+  "member": "Max Sippl",
+  "email": "sepp.sippl@sippl.net",
+  "qualifications": {
+    "mta_absolviert": false,
+    "dienstjahre_25": true,
+    "dienstjahre_40": false
+  }
+}
