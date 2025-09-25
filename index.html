@@ -73,14 +73,14 @@
         </header>
 
         <!-- Navigation -->
-        <nav class="tab-navigation">
+        <nav class="tab-navigation" role="tablist" aria-label="Hauptbereiche">
             <div class="nav-container">
-                <button type="button" class="tab-btn active" data-tab="registration">
+                <button type="button" class="tab-btn active" role="tab" aria-selected="true" aria-controls="registration" id="tab-registration" data-tab="registration">
                     <span class="tab-icon">📝</span>
                     <span class="tab-text">Registrierung</span>
                     <div class="tab-indicator"></div>
                 </button>
-                <button type="button" class="tab-btn" data-tab="info">
+                <button type="button" class="tab-btn" role="tab" aria-selected="false" aria-controls="info" id="tab-info" data-tab="info">
                     <span class="tab-icon">ℹ️</span>
                     <span class="tab-text">Informationen</span>
                     <div class="tab-indicator"></div>
@@ -213,6 +213,25 @@
                             </div>
                         </section>
 
+                        <!-- Datenschutz -->
+                        <section class="form-section">
+                            <h3 class="section-title">
+                                <span class="section-icon">✅</span>
+                                Datenschutz
+                            </h3>
+                            <p class="section-subtitle">Einwilligung zur Datenverarbeitung</p>
+                            <div class="form-grid">
+                                <div class="form-field full-width">
+                                    <label class="qual-item" style="display:flex;align-items:flex-start;gap:.5rem;cursor:pointer;">
+                                        <input type="checkbox" id="datenschutz" name="datenschutz" required>
+                                        <div class="qual-checkbox"></div>
+                                        <span class="qual-text">Ich bestätige die korrekte Angabe meiner Daten und willige in die Verarbeitung zum Zweck der Beantragung der Ehrenamtskarte gemäß DSGVO ein.</span>
+                                    </label>
+                                    <span class="field-hint">Pflicht zur Antragstellung</span>
+                                </div>
+                            </div>
+                        </section>
+
                         <!-- Passwort -->
                         <section class="form-section">
                             <h3 class="section-title">
@@ -238,7 +257,7 @@
                                 Zurücksetzen
                             </button>
                             <button type="submit" class="btn btn-primary">
-                                <span class="btn-icon">📤</span>
+                                <span class="btn-icon">�</span>
                                 Daten übermitteln
                             </button>
                         </div>
@@ -247,65 +266,13 @@
             </div>
 
             <!-- Information Tab -->
-            <div id="info" class="tab-content">
+            <div id="info" class="tab-content" role="tabpanel" aria-labelledby="tab-info">
                 <div class="info-container">
                     <div class="info-header">
                         <h2>Informationen zur Ehrenamtskarte</h2>
                         <p>Alles was Sie über die Ehrenamtskarte wissen müssen</p>
                     </div>
-
-                    <div class="info-grid">
-                        <div class="info-card">
-                            <span class="info-icon">🎫</span>
-                            <h3>Was ist die Ehrenamtskarte?</h3>
-                            <p>Die Ehrenamtskarte ist eine Anerkennungsform für Menschen, die sich ehrenamtlich engagieren und damit einen wichtigen Beitrag für das Gemeinwohl leisten.</p>
-                        </div>
-
-                        <div class="info-card">
-                            <span class="info-icon">✅</span>
-                            <h3>Voraussetzungen für Feuerwehren</h3>
-                            <ul>
-                                <li><strong>Blaue Ehrenamtskarte:</strong> Aktiver Dienst in der Freiwilligen Feuerwehr mit abgeschlossener Truppmannausbildung</li>
-                                <li><strong>Goldene Ehrenamtskarte:</strong> Feuerwehrdienst mit Dienstzeitauszeichnung nach 25 Jahren aktiver Tätigkeit</li>
-                                <li>Mindestens 16 Jahre alt</li>
-                                <li>Aufwandsentschädigungen dürfen 840€ (Ehrenamtspauschale) nicht übersteigen</li>
-                            </ul>
-                        </div>
-
-                        <div class="info-card">
-                            <span class="info-icon">🎁</span>
-                            <h3>Vorteile in Bayern</h3>
-                            <ul>
-                                <li>Vergünstigungen bei staatlichen Einrichtungen (Museen, Burgen, Schlösser)</li>
-                                <li>Rabatte bei über 1.000 regionalen Partnern</li>
-                                <li>Kostenlose App "Ehrenamtskarte Bayern" mit aktuellen Angeboten</li>
-                                <li>Spezielle Verlosungen und Aktionen</li>
-                                <li>Vergünstigungen bei Freizeitparks und Kulturveranstaltungen</li>
-                            </ul>
-                        </div>
-
-                        <div class="info-card">
-                            <span class="info-icon">🔒</span>
-                            <h3>Datenschutz</h3>
-                            <p>Ihre Daten werden gemäß DSGVO verarbeitet und nur für die Beantragung der Ehrenamtskarte verwendet. Sie werden nicht an Dritte weitergegeben.</p>
-                        </div>
-
-                        <div class="info-card">
-                            <span class="info-icon">📋</span>
-                            <h3>Beantragung & Bearbeitung</h3>
-                            <p>Die Daten werden über diese Website gesammelt und an das <strong>Landratsamt Neumarkt i.d.OPf.</strong> weitergeleitet. Die Ehrenamtskarte wird dort geprüft und in der Regel innerhalb von 4-6 Wochen ausgestellt.</p>
-                        </div>
-
-                        <div class="info-card">
-                            <span class="info-icon">💬</span>
-                            <h3>Kontakt & Zuständigkeit</h3>
-                            <p><strong>Feuerwehr Hamberg:</strong> Bei Fragen zur Anmeldung wenden Sie sich an die Feuerwehrleitung.</p>
-                            <p><strong>Landratsamt Neumarkt i.d.OPf.:</strong><br>
-                            Nürnberger Straße 1<br>
-                            92318 Neumarkt i.d.OPf.<br>
-                            Tel.: 09181 470-0</p>
-                        </div>
-                    </div>
+                    <div class="info-grid" aria-live="polite"></div>
                 </div>
             </div>
         </main>
@@ -329,7 +296,7 @@
     </div>
 
     <!-- Status Messages -->
-    <div id="statusOverlay" class="status-overlay"></div>
+    <div id="statusOverlay" class="status-overlay" role="status" aria-live="polite"></div>
 
     <!-- Scripts -->
     <script src="config.js"></script>

@@ -399,7 +399,7 @@ Token eingeben:`;
                 datenschutz: this.checked('datenschutz')
             },
             meta: {
-                accessVerified: !!this.value('access_password')
+                passwortVorhanden: !!this.value('passwort')
             }
         };
         return data;

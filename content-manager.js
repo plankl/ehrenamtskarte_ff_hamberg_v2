@@ -16,7 +16,7 @@ class SimpleMarkdownManager {
         this.registrationContent = null;
         this.isLoaded = false;
         this.sections = [];
-        this.init();
+        // Initialisierung erfolgt nur einmal nach DOMContentLoaded
     }
 
     async init() {
@@ -26,6 +26,8 @@ class SimpleMarkdownManager {
             this.parseRegistrationContent();
             this.renderInfoCards();
             this.updateRegistrationContent();
+            // Event für andere Module
+            document.dispatchEvent(new CustomEvent('content:ready', { detail: { infoSections: this.sections.length } }));
             console.log('✅ Simple Markdown Manager initialized successfully');
         } catch (error) {
             console.warn('⚠️ Markdown content not available, using fallback', error);
@@ -319,6 +321,9 @@ class SimpleMarkdownManager {
     createCard(section) {
         const card = document.createElement('div');
         card.className = 'info-card';
+        card.setAttribute('role', 'region');
+        const titleId = 'info-' + section.title.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+        card.setAttribute('aria-labelledby', titleId);
 
         // Icon
         const icon = document.createElement('span');
@@ -328,6 +333,7 @@ class SimpleMarkdownManager {
 
         // Title
         const title = document.createElement('h3');
+        title.id = titleId;
         title.textContent = section.title;
         card.appendChild(title);
 
@@ -342,6 +348,10 @@ class SimpleMarkdownManager {
 
     markdownToHTML(text) {
         if (!text) return '';
+        // Grundlegendes Escaping zuerst (bevor wir selektiv eigenes HTML erzeugen)
+        text = text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;');
         
         return text
             // Headers
@@ -382,6 +392,7 @@ class SimpleMarkdownManager {
             this.parseRegistrationContent();
             this.renderInfoCards();
             this.updateRegistrationContent();
+            document.dispatchEvent(new CustomEvent('content:ready', { detail: { reloaded: true, infoSections: this.sections.length } }));
             console.log('✅ Content reloaded successfully');
         } catch (error) {
             console.error('❌ Failed to reload content:', error);
@@ -389,12 +400,10 @@ class SimpleMarkdownManager {
     }
 }
 
-// Initialize when DOM is ready
+// Single initialization
 document.addEventListener('DOMContentLoaded', () => {
-    window.contentManager = new SimpleMarkdownManager();
+    if (!window.contentManager) {
+        window.contentManager = new SimpleMarkdownManager();
+        window.contentManager.init();
+    }
 });
-
-// Also initialize if DOM is already loaded
-if (document.readyState !== 'loading') {
-    window.contentManager = new SimpleMarkdownManager();
-}
