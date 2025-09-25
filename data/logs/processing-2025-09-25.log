@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-09-25T14:56:22.021Z",
+  "action": "member_added",
+  "member": "Jochen Sippl",
+  "email": "sepp.sippl@sippl.net",
+  "qualifications": {
+    "mta_absolviert": false,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  }
+}
