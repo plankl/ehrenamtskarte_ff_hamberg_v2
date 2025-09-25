@@ -28,19 +28,32 @@ jobs:
 
       - name: 🏗️ Rebuild for deployment
         run: |
-          # Create build directory
+          set -e
+          echo "🏗️ Starte Build Schritt"
           mkdir -p _site
 
-          # Copy all files except sensitive ones
-          cp index.html _site/
-          cp admin.html _site/
-          cp styles.css _site/
-          cp script.js _site/
-          cp README.md _site/
+          echo "📄 Kopiere statische Dateien (nur vorhandene)"
+          FILES="index.html styles.css script.js content-manager.js content.md registration.md README.md data-export.js auswertung.js conditions.md"
+          for f in $FILES; do
+            if [ -f "$f" ]; then
+              cp "$f" _site/
+              echo "✔ Kopiert: $f"
+            else
+              echo "ℹ Übersprungen (nicht vorhanden): $f"
+            fi
+          done
 
-          # Create config.js with secrets injection
-          ACCESS_PASSWORD="${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}"
-          MASTER_TOKEN="${{ secrets.DATA_TRANSFER_TOKEN }}"
+          # Hinweis falls alte admin.html referenziert wurde
+          if [ -f admin.html ]; then
+            echo "⚠ admin.html existiert wieder - bitte deploy.yml anpassen falls benötigt"
+            cp admin.html _site/
+          else
+            echo "✅ admin.html nicht vorhanden – Referenz entfernt"
+          fi
+
+          # Secrets injizieren
+            ACCESS_PASSWORD="${{ secrets.FEUERWEHR_ACCESS_PASSWORD }}"
+            MASTER_TOKEN="${{ secrets.DATA_TRANSFER_TOKEN }}"
 
           cat > _site/config.js << EOF
           // GitHub Configuration - Auto-generated during deployment
@@ -56,11 +69,13 @@ jobs:
           };
           EOF
 
-          # Create robots.txt for privacy
+          # Privacy robots.txt
           cat > _site/robots.txt << 'EOF'
           User-agent: *
           Disallow: /
           EOF
+
+          echo "✅ Build Ordner vorbereitet"
 
       - name: � Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
