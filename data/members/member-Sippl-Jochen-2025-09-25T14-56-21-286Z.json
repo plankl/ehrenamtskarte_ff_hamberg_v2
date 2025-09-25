@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-09-25T14:56:20.624Z",
+  "person": {
+    "nachname": "Sippl",
+    "vorname": "Jochen",
+    "geburtsdatum": "1988-11-11",
+    "email": "sepp.sippl@sippl.net",
+    "telefon": "1234"
+  },
+  "adresse": {
+    "strasse": "Rascher Str. 7",
+    "hausnummer": "",
+    "plz": "92363",
+    "ort": "Hmaberg"
+  },
+  "qualifikationen": {
+    "mta_absolviert": false,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  },
+  "consent": {
+    "datenschutz": false
+  },
+  "meta": {
+    "accessVerified": false
+  }
+}
