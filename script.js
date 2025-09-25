@@ -82,6 +82,7 @@ class FirefighterDataManager {
     constructor() {
         this.form = document.getElementById('memberForm');
         this.statusOverlay = document.getElementById('statusOverlay');
+        this.submitBtn = document.querySelector('button[type="submit"]');
         
         // Modal elements - updated selectors
         this.modal = document.getElementById('confirmModal');
@@ -367,7 +368,11 @@ Token eingeben:`;
             this.setStatus('✅ Erfolgreich übermittelt! Vielen Dank für Ihre Daten.', 'success');
             this.clearDraft();
             this.form.reset();
-            this.submitBtn.style.display = 'none';
+            
+            // Hide submit button if it exists
+            if (this.submitBtn) {
+                this.submitBtn.style.display = 'none';
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } catch (error) {
             this.setStatus(`❌ Fehler: ${error.message}`, 'error');
