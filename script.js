@@ -385,8 +385,8 @@ Token eingeben:`;
                 telefon: this.value('telefon')
             },
             adresse: {
-                strasse: this.value('strasse'),
-                hausnummer: this.value('hausnummer'),
+                // Feld enthält bereits Straße + Hausnummer in einem Input
+                strasse_komplett: this.value('strasse'),
                 plz: this.value('plz'),
                 ort: this.value('ort')
             },
@@ -417,7 +417,7 @@ Token eingeben:`;
                 <div><strong>Geburtsdatum:</strong> ${d.person.geburtsdatum}</div>
                 <div><strong>E-Mail:</strong> ${d.person.email}</div>
                 <div><strong>Telefon:</strong> ${d.person.telefon}</div>
-                <div><strong>Adresse:</strong> ${d.adresse.strasse} ${d.adresse.hausnummer}, ${d.adresse.plz} ${d.adresse.ort}</div>
+                <div><strong>Adresse:</strong> ${d.adresse.strasse_komplett}, ${d.adresse.plz} ${d.adresse.ort}</div>
                 <div><strong>MTA:</strong> ${d.qualifikationen.mta_absolviert ? 'Ja' : 'Nein'}</div>
                 <div><strong>25 Jahre:</strong> ${d.qualifikationen.dienstjahre_25 ? 'Ja' : 'Nein'}</div>
                 <div><strong>40 Jahre:</strong> ${d.qualifikationen.dienstjahre_40 ? 'Ja' : 'Nein'}</div>
