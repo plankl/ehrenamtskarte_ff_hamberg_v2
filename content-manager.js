@@ -204,10 +204,36 @@ class SimpleMarkdownManager {
                 else if (subtitleP) subtitleP.textContent = hero['Untertitel'];
             }
 
-            // Badges (Badge 1..3)
-            const badgeTexts = document.querySelectorAll('.hero-badges .badge-item .badge-text');
-            ['Badge 1','Badge 2','Badge 3'].forEach((k, idx) => {
-                if (hero[k] && badgeTexts[idx]) badgeTexts[idx].textContent = hero[k];
+            // Badges (Badge 1..3) – Emoji nicht doppelt anzeigen
+            const badgeItems = document.querySelectorAll('.hero-badges .badge-item');
+            const badgeKeys = ['Badge 1','Badge 2','Badge 3'];
+
+            const isEmoji = (ch) => {
+                if (!ch) return false;
+                try {
+                    return /[\p{Extended_Pictographic}]/u.test(ch);
+                } catch {
+                    // Fallback für Browser ohne Unicode Property Escapes
+                    return /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u.test(ch);
+                }
+            };
+
+            badgeKeys.forEach((key, idx) => {
+                const val = (hero[key] || '').trim();
+                if (!val || !badgeItems[idx]) return;
+                const iconEl = badgeItems[idx].querySelector('.badge-icon');
+                const textEl = badgeItems[idx].querySelector('.badge-text');
+                if (!textEl) return;
+
+                const firstChar = val.charAt(0);
+                if (isEmoji(firstChar)) {
+                    // Emoji nur im Icon anzeigen, Text ohne führendes Emoji
+                    if (iconEl) iconEl.textContent = firstChar;
+                    textEl.textContent = val.slice(1).trim();
+                } else {
+                    // Kein Emoji am Anfang → nur Text aktualisieren
+                    textEl.textContent = val;
+                }
             });
         }
 
