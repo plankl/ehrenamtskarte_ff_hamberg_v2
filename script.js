@@ -2,6 +2,49 @@
 // FEUERWEHR HAMBERG - MODERN JAVASCRIPT     //
 // ========================================= //
 
+// Utility functions for safer DOM operations
+function safeElementOperation(element, operation, fallback = null) {
+    try {
+        if (element && typeof element === 'object' && element.nodeType === 1) {
+            return operation(element);
+        } else {
+            console.warn('⚠️ Element not available for operation');
+            return fallback;
+        }
+    } catch (error) {
+        console.error('🚨 Element operation failed:', error);
+        return fallback;
+    }
+}
+
+function waitForElement(selector, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            resolve(element);
+            return;
+        }
+        
+        const observer = new MutationObserver(() => {
+            const element = document.querySelector(selector);
+            if (element) {
+                observer.disconnect();
+                resolve(element);
+            }
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+        
+        setTimeout(() => {
+            observer.disconnect();
+            reject(new Error(`Element ${selector} not found within ${timeout}ms`));
+        }, timeout);
+    });
+}
+
 // Theme Management System
 class ThemeManager {
     constructor() {
@@ -80,18 +123,32 @@ class TabManager {
 // Main Firefighter Data Manager - Enhanced
 class FirefighterDataManager {
     constructor() {
+        // Core elements with defensive initialization
         this.form = document.getElementById('memberForm');
         this.statusOverlay = document.getElementById('statusOverlay');
-        this.submitBtn = document.querySelector('button[type="submit"]');
         
-        // Modal elements - updated selectors
+        // Submit button with multiple fallback selectors
+        this.submitBtn = document.querySelector('#memberForm button[type="submit"]') || 
+                        document.querySelector('button[type="submit"]') ||
+                        document.querySelector('.btn-primary');
+        
+        // Modal elements - updated selectors with null checks
         this.modal = document.getElementById('confirmModal');
         this.modalTitle = document.getElementById('modalTitle');
         this.modalMessage = document.getElementById('modalMessage');
         this.modalConfirmBtn = document.getElementById('confirmButton');
+        this.previewDataBox = document.getElementById('previewData');
         
         // Configuration
         this.config = window.GITHUB_CONFIG || {};
+        
+        // Debug logging for troubleshooting
+        console.log('🔧 FirefighterDataManager Elements:', {
+            form: !!this.form,
+            statusOverlay: !!this.statusOverlay,
+            submitBtn: !!this.submitBtn,
+            modal: !!this.modal
+        });
         
         this.init();
     }
@@ -299,7 +356,9 @@ Token eingeben:`;
         if (this.previewDataBox) this.previewDataBox.innerHTML = html;
         this.showModal();
         // Ensure submit stays hidden until confirmed
-        this.submitBtn.style.display = 'none';
+        if (this.submitBtn) {
+            this.submitBtn.style.display = 'none';
+        }
         this.setStatus('Bitte prüfen Sie die Daten in der Vorschau.', 'info');
     }
 
@@ -308,8 +367,14 @@ Token eingeben:`;
 
     enableSubmit() {
         this.hideModal();
-        this.submitBtn.style.display = '';
-        this.submitBtn.focus();
+        if (this.submitBtn) {
+            this.submitBtn.style.display = '';
+            try {
+                this.submitBtn.focus();
+            } catch (error) {
+                console.warn('⚠️ Submit button focus failed:', error);
+            }
+        }
         this.setStatus('Vorschau bestätigt. Sie können jetzt senden.', 'success');
     }
 
@@ -476,19 +541,35 @@ Token eingeben:`;
     }
 
     setStatus(message, type = 'info') {
-        if (!this.statusOverlay) return;
-        
-        this.statusOverlay.textContent = message;
-        this.statusOverlay.className = `status-overlay show ${type}`;
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            if (this.statusOverlay) {
-                this.statusOverlay.classList.remove('show');
-            }
-        }, 5000);
-        
+        // Always log the status for debugging
         console.log(`Status (${type}): ${message}`);
+        
+        // Safe DOM manipulation
+        if (this.statusOverlay && typeof this.statusOverlay.textContent !== 'undefined') {
+            try {
+                this.statusOverlay.textContent = message;
+                this.statusOverlay.className = `status-overlay show ${type}`;
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (this.statusOverlay && this.statusOverlay.classList) {
+                        this.statusOverlay.classList.remove('show');
+                    }
+                }, 5000);
+            } catch (error) {
+                console.warn('⚠️ Status overlay update failed:', error);
+                // Fallback: show alert if DOM manipulation fails
+                if (type === 'error') {
+                    alert(`Fehler: ${message}`);
+                }
+            }
+        } else {
+            console.warn('⚠️ Status overlay element not available');
+            // Fallback for critical messages
+            if (type === 'error') {
+                alert(`Fehler: ${message}`);
+            }
+        }
     }
 
     saveDraft() {
@@ -592,4 +673,26 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('Theme Toggle Button:', document.getElementById('themeToggle'));
     console.log('Tab Buttons:', document.querySelectorAll('.tab-btn'));
     console.log('Tab Contents:', document.querySelectorAll('.tab-content'));
+});
+
+// Global error handling for better stability
+window.addEventListener('error', (event) => {
+    console.error('🚨 Global JavaScript Error:', {
+        message: event.message,
+        filename: event.filename,
+        lineno: event.lineno,
+        colno: event.colno,
+        error: event.error
+    });
+    
+    // Don't show alerts for every error, just log them
+    return true; // Prevent default browser error handling
+});
+
+// Handle unhandled promise rejections
+window.addEventListener('unhandledrejection', (event) => {
+    console.error('🚨 Unhandled Promise Rejection:', event.reason);
+    
+    // Prevent the default handling (which would show an error in console)
+    event.preventDefault();
 });
