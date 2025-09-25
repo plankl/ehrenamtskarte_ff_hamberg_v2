@@ -57,3 +57,15 @@
     "dienstjahre_40": false
   }
 }
+
+{
+  "timestamp": "2025-09-25T20:04:31.836Z",
+  "action": "member_added",
+  "member": "Abstimmungs Test",
+  "email": "sepp.sippl@sippl.net",
+  "qualifications": {
+    "mta_absolviert": true,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  }
+}
