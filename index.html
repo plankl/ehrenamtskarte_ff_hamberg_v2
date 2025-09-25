@@ -187,22 +187,27 @@
                             
                             <div class="qualifications-container">
                                 <div class="qual-category">
+                                    <h4 class="qual-category-title">📋 Kriterien für die Ehrenamtskarte</h4>
+                                    <p class="qual-category-desc">Markieren Sie alle zutreffenden Qualifikationen/Jahre:</p>
                                     <div class="qual-grid">
                                         <label class="qual-item">
-                                            <input type="checkbox" name="qualifikationen" value="Truppmann">
+                                            <input type="checkbox" id="mta_absolviert" name="mta_absolviert" value="mta_absolviert">
                                             <div class="qual-checkbox"></div>
-                                            <span class="qual-text">Truppmann</span>
+                                            <span class="qual-text">Modulare Truppausbildung (MTA) absolviert</span>
                                         </label>
                                         <label class="qual-item">
-                                            <input type="checkbox" name="qualifikationen" value="25 Jahre aktiv">
+                                            <input type="checkbox" id="dienstjahre_25" name="dienstjahre_25" value="dienstjahre_25">
                                             <div class="qual-checkbox"></div>
-                                            <span class="qual-text">25 Jahre aktiv</span>
+                                            <span class="qual-text">25 Jahre aktiver Feuerwehrdienst</span>
                                         </label>
                                         <label class="qual-item">
-                                            <input type="checkbox" name="qualifikationen" value="40 Jahre aktiv">
+                                            <input type="checkbox" id="dienstjahre_40" name="dienstjahre_40" value="dienstjahre_40">
                                             <div class="qual-checkbox"></div>
-                                            <span class="qual-text">40 Jahre aktiv</span>
+                                            <span class="qual-text">40 Jahre aktiver Feuerwehrdienst</span>
                                         </label>
+                                    </div>
+                                    <div class="qual-info">
+                                        <p><strong>Hinweis:</strong> Mindestens eine der Qualifikationen muss erfüllt sein, um die Ehrenamtskarte zu erhalten.</p>
                                     </div>
                                 </div>
                             </div>
@@ -328,6 +333,7 @@
 
     <!-- Scripts -->
     <script src="config.js"></script>
+    <script src="data-export.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -278,6 +278,11 @@ Token eingeben:`;
             return false;
         }
         
+        // Enhanced custom validation
+        if (!this.validateCustomFields()) {
+            return false;
+        }
+        
         // Validate access password
         const accessPassword = this.value('passwort');
         const configPassword = window.GITHUB_CONFIG?.accessPassword;
@@ -300,6 +305,70 @@ Token eingeben:`;
             if (!this.config.isDevelopment) {
                 console.warn('⚠️ No access password configured in secrets - basic validation only');
             }
+        }
+        
+        return true;
+    }
+
+    validateCustomFields() {
+        // Geburtsdatum - Jahr nicht vor 1930
+        const geburtsdatum = this.value('geburtsdatum');
+        if (geburtsdatum) {
+            const birthYear = new Date(geburtsdatum).getFullYear();
+            if (birthYear < 1930) {
+                this.setStatus('❌ Geburtsjahr darf nicht vor 1930 liegen.', 'error');
+                return false;
+            }
+            if (birthYear > new Date().getFullYear() - 16) {
+                this.setStatus('❌ Mindestalter für Ehrenamtskarte ist 16 Jahre.', 'error');
+                return false;
+            }
+        }
+        
+        // Postleitzahl - 5 stellig
+        const plz = this.value('plz');
+        if (plz && !/^\d{5}$/.test(plz)) {
+            this.setStatus('❌ Postleitzahl muss genau 5 Ziffern haben.', 'error');
+            return false;
+        }
+        
+        // Telefonnummer - automatisch +49 vorsetzen
+        const telefonInput = this.form.querySelector('[name="telefon"]');
+        if (telefonInput && telefonInput.value) {
+            let telefon = telefonInput.value.trim();
+            
+            // Normalisierung: Entferne alle nicht-numerischen Zeichen außer +
+            telefon = telefon.replace(/[^\d+]/g, '');
+            
+            // Wenn keine Ländervorwahl, füge +49 hinzu
+            if (!telefon.startsWith('+')) {
+                if (telefon.startsWith('0')) {
+                    telefon = '+49' + telefon.substring(1);
+                } else if (!telefon.startsWith('49')) {
+                    telefon = '+49' + telefon;
+                } else {
+                    telefon = '+' + telefon;
+                }
+            }
+            
+            // Validierung der deutschen Telefonnummer
+            if (!/^\+49\d{10,11}$/.test(telefon)) {
+                this.setStatus('❌ Bitte geben Sie eine gültige deutsche Telefonnummer ein.', 'error');
+                return false;
+            }
+            
+            // Aktualisiere das Eingabefeld
+            telefonInput.value = telefon;
+        }
+        
+        // Qualifikationen - mindestens eine muss ausgewählt sein
+        const mta = this.checked('mta_absolviert');
+        const jahre25 = this.checked('dienstjahre_25');
+        const jahre40 = this.checked('dienstjahre_40');
+        
+        if (!mta && !jahre25 && !jahre40) {
+            this.setStatus('❌ Bitte wählen Sie mindestens eine Qualifikation aus, die für die Ehrenamtskarte erforderlich ist.', 'error');
+            return false;
         }
         
         return true;
@@ -429,6 +498,9 @@ Token eingeben:`;
 
             // Trigger data processing (optional webhook or action)
             this.triggerDataProcessing(token, owner, repo, data).catch(console.warn);
+            
+            // Generate export files automatically
+            this.generateExportFiles(data).catch(console.warn);
 
             this.setStatus('✅ Erfolgreich übermittelt! Vielen Dank für Ihre Daten.', 'success');
             this.clearDraft();
@@ -626,6 +698,20 @@ Token eingeben:`;
     }
 
     clearDraft() { localStorage.removeItem('ff_hamberg_v2_draft'); }
+
+    async generateExportFiles(data) {
+        try {
+            if (window.DataExportManager) {
+                const exportManager = new window.DataExportManager();
+                await exportManager.generateExports(data);
+                console.log('📊 Export files generated successfully');
+            } else {
+                console.warn('⚠️ DataExportManager not available');
+            }
+        } catch (error) {
+            console.error('❌ Export generation failed:', error);
+        }
+    }
 }
 
 // Global functions for easy access
