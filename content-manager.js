@@ -1,6 +1,13 @@
 /**
  * 📝 Simple Markdown Content Manager - Robust & Clean Implementation
- * Loads content.md and renders it as info cards
+ * Lädt:
+ *  - content.md  (Info-Tabs → Karten)
+ *  - registration.md (Hero, Badges, Formular-Texte)
+ *
+ * Ziele:
+ *  - Kein Framework, nur Vanilla JS
+ *  - Robust bei fehlenden Dateien (Seite funktioniert weiter)
+ *  - Einfache Erweiterbarkeit (Mapping + Normalisierung)
  */
 
 class SimpleMarkdownManager {
@@ -99,99 +106,159 @@ class SimpleMarkdownManager {
     parseRegistrationContent() {
         if (!this.registrationContent) return;
 
-        this.registrationData = {};
-        const lines = this.registrationContent.split('\n');
-        let currentSection = '';
+        // Kanonische interne Schlüssel
+        const sectionAliases = {
+            'hero bereich': 'hero',
+            'hero section': 'hero',
+            'formular abschnitte': 'form',
+            'formular': 'form',
+            'submit button': 'submit',
+            'absenden': 'submit'
+        };
 
-        for (const line of lines) {
+        const normalize = (s) => (s || '')
+            .toLowerCase()
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        this.registrationData = { hero: {}, form: { sections: [] }, submit: {} };
+
+        const lines = this.registrationContent.split('\n');
+        let currentSection = null;   // hero | form | submit
+        let currentSubsection = null; // aktueller Formular-Abschnitt
+
+        for (let rawLine of lines) {
+            const line = rawLine.trimEnd();
+            if (!line) continue;
+
+            // Abschnittsebene (## ...)
             if (line.startsWith('## ')) {
-                currentSection = line.replace('## ', '').trim();
-                this.registrationData[currentSection] = {};
-            } else if (line.startsWith('### ')) {
-                const subsection = line.replace('### ', '').trim();
-                this.registrationData[currentSection] = this.registrationData[currentSection] || {};
-                this.registrationData[currentSection][subsection] = '';
-            } else if (line.includes('**') && line.includes(':**')) {
-                const [key, value] = line.split(':**');
-                const cleanKey = key.replace(/\*/g, '').trim();
-                const cleanValue = value ? value.trim() : '';
-                
-                if (currentSection) {
-                    this.registrationData[currentSection] = this.registrationData[currentSection] || {};
-                    this.registrationData[currentSection][cleanKey] = cleanValue;
+                const original = line.replace('## ', '').trim();
+                const key = sectionAliases[normalize(original)] || normalize(original);
+                currentSection = key;
+                if (key === 'form' && !this.registrationData.form.sections) {
+                    this.registrationData.form.sections = [];
                 }
-            } else if (line.trim() && !line.startsWith('---') && !line.startsWith('#')) {
-                // Collect multi-line content
-                if (currentSection && line.includes('**Wichtiger Hinweis:**')) {
-                    this.registrationData[currentSection]['Hinweis'] = line.replace('**Wichtiger Hinweis:**', '').trim();
+                currentSubsection = null;
+                continue;
+            }
+
+            // Formular-Unterabschnitte (### ...)
+            if (line.startsWith('### ') && currentSection === 'form') {
+                const subsectionTitle = line.replace('### ', '').trim();
+                currentSubsection = {
+                    rawTitle: subsectionTitle,
+                    data: {}
+                };
+                this.registrationData.form.sections.push(currentSubsection);
+                continue;
+            }
+
+            // Key-Value Zeilen (**Key:** Value)
+            if (line.startsWith('**') && line.includes(':**')) {
+                const [kPart, vPart] = line.split(':**');
+                const rawKey = kPart.replace(/\*/g, '').trim();
+                const value = (vPart || '').trim();
+
+                if (currentSection === 'hero') {
+                    this.registrationData.hero[rawKey] = value;
+                } else if (currentSection === 'submit') {
+                    this.registrationData.submit[rawKey] = value;
+                } else if (currentSection === 'form') {
+                    if (currentSubsection) {
+                        currentSubsection.data[rawKey] = value;
+                    }
+                }
+                continue;
+            }
+
+            // Hinweis-Zeile
+            if (line.includes('**Wichtiger Hinweis:**')) {
+                const note = line.replace('**Wichtiger Hinweis:**', '').trim();
+                if (currentSection === 'form') {
+                    this.registrationData.form.note = note;
+                } else {
+                    this.registrationData.note = note;
                 }
             }
         }
 
-        console.log('📝 Registration content parsed:', this.registrationData);
+        console.log('📝 Registration content parsed (normalized):', this.registrationData);
     }
 
     updateRegistrationContent() {
         if (!this.registrationData) return;
 
-        // Update hero section
-        if (this.registrationData['Hero Section']) {
-            const heroData = this.registrationData['Hero Section'];
-            
-            // Update main title
-            const heroTitle = document.querySelector('.hero h1');
-            if (heroTitle && heroData['Titel']) {
-                heroTitle.textContent = heroData['Titel'];
+        const { hero, form, submit } = this.registrationData;
+
+        // HERO -------------------------------------------------
+        if (hero) {
+            const titlePrimary = document.querySelector('.title-primary');
+            const titleSecondary = document.querySelector('.title-secondary');
+            const subtitleP = document.querySelector('.hero-subtitle');
+
+            if (hero['Titel'] && titlePrimary) titlePrimary.textContent = hero['Titel'];
+            if (hero['Untertitel']) {
+                // Falls sekundäre Zeile gewünscht → zweite Zeile des H1
+                if (titleSecondary) titleSecondary.textContent = hero['Untertitel'];
+                else if (subtitleP) subtitleP.textContent = hero['Untertitel'];
             }
 
-            // Update subtitle
-            const heroSubtitle = document.querySelector('.hero p');
-            if (heroSubtitle && heroData['Untertitel']) {
-                heroSubtitle.textContent = heroData['Untertitel'];
-            }
-
-            // Update hero badges
-            if (heroData['Badge 1'] || heroData['Badge 2']) {
-                const heroBadges = document.querySelectorAll('.hero .badge');
-                if (heroBadges[0] && heroData['Badge 1']) heroBadges[0].textContent = heroData['Badge 1'];
-                if (heroBadges[1] && heroData['Badge 2']) heroBadges[1].textContent = heroData['Badge 2'];
-            }
+            // Badges (Badge 1..3)
+            const badgeTexts = document.querySelectorAll('.hero-badges .badge-item .badge-text');
+            ['Badge 1','Badge 2','Badge 3'].forEach((k, idx) => {
+                if (hero[k] && badgeTexts[idx]) badgeTexts[idx].textContent = hero[k];
+            });
         }
 
-        // Update form sections
-        if (this.registrationData['Formular Abschnitte']) {
-            const formData = this.registrationData['Formular Abschnitte'];
-            
-            // Update form section titles
-            const formSections = document.querySelectorAll('.form-section h3');
-            if (formSections[0] && formData['Persönliche Daten']) {
-                formSections[0].textContent = formData['Persönliche Daten'];
-            }
-            if (formSections[1] && formData['Kontaktdaten']) {
-                formSections[1].textContent = formData['Kontaktdaten'];
-            }
-            if (formSections[2] && formData['Ehrenamtliche Tätigkeit']) {
-                formSections[2].textContent = formData['Ehrenamtliche Tätigkeit'];
-            }
+        // FORM ABSCHNITTE -------------------------------------
+        if (form && Array.isArray(form.sections) && form.sections.length) {
+            const sectionEls = document.querySelectorAll('.form-section');
+            form.sections.forEach((secObj, idx) => {
+                const el = sectionEls[idx];
+                if (!el) return;
+                const h3 = el.querySelector('h3');
+                const subtitle = el.querySelector('.section-subtitle');
 
-            // Update qualification note
-            if (formData['Hinweis']) {
-                const qualificationNote = document.querySelector('.qualification-note');
-                if (qualificationNote) {
-                    qualificationNote.innerHTML = `<strong>Wichtiger Hinweis:</strong> ${formData['Hinweis']}`;
+                const titel = secObj.data['Titel'];
+                const beschr = secObj.data['Beschreibung'];
+                if (titel && h3) {
+                    // Behalte Icon-Span falls vorhanden
+                    const iconSpan = h3.querySelector('.section-icon');
+                    if (iconSpan) {
+                        h3.innerHTML = '';
+                        h3.appendChild(iconSpan);
+                        h3.appendChild(document.createTextNode(' ' + titel.replace(/^[^A-Za-z0-9ÄÖÜäöüß]+/, '')));
+                    } else {
+                        h3.textContent = titel;
+                    }
                 }
+                if (beschr && subtitle) subtitle.textContent = beschr;
+            });
+
+            // Hinweis
+            if (form.note) {
+                let noteEl = document.querySelector('.qualification-note');
+                if (!noteEl) {
+                    // Falls noch nicht vorhanden → dynamisch unter Qualifikationen einfügen
+                    const qualSection = document.querySelector('.form-section:nth-of-type(3)'); // grobe Annahme
+                    if (qualSection) {
+                        noteEl = document.createElement('div');
+                        noteEl.className = 'qualification-note';
+                        qualSection.appendChild(noteEl);
+                    }
+                }
+                if (noteEl) noteEl.innerHTML = `<strong>Wichtiger Hinweis:</strong> ${form.note}`;
             }
         }
 
-        // Update submit button
-        if (this.registrationData['Submit Button'] && this.registrationData['Submit Button']['Text']) {
+        // SUBMIT BUTTON ---------------------------------------
+        if (submit && submit['Text']) {
             const submitBtn = document.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                submitBtn.textContent = this.registrationData['Submit Button']['Text'];
-            }
+            if (submitBtn) submitBtn.innerHTML = `<span class="btn-icon">${submit['Icon'] || '📤'}</span>${submit['Text']}`;
         }
 
-        console.log('✅ Registration content updated successfully');
+        console.log('✅ Registration content updated (DOM applied)');
     }
 
     getIconForSection(title) {
