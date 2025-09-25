@@ -33,3 +33,15 @@
     "dienstjahre_40": false
   }
 }
+
+{
+  "timestamp": "2025-09-25T15:19:17.843Z",
+  "action": "member_added",
+  "member": "cab cab",
+  "email": "asdf@web.de",
+  "qualifications": {
+    "mta_absolviert": true,
+    "dienstjahre_25": true,
+    "dienstjahre_40": false
+  }
+}
