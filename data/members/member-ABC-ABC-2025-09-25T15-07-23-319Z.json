@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-09-25T15:07:22.733Z",
+  "person": {
+    "nachname": "ABC",
+    "vorname": "ABC",
+    "geburtsdatum": "1111-11-19",
+    "email": "max@web.de",
+    "telefon": "+4912312312312"
+  },
+  "adresse": {
+    "strasse": "asdfs",
+    "hausnummer": "",
+    "plz": "12344",
+    "ort": "asdfadsf"
+  },
+  "qualifikationen": {
+    "mta_absolviert": false,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  },
+  "consent": {
+    "datenschutz": false
+  },
+  "meta": {
+    "accessVerified": false
+  }
+}
