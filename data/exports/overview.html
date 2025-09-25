@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚒 Feuerwehr Hamberg - Mitgliederübersicht</title>
+    <style>
+        body { font-family: Inter, sans-serif; margin: 0; background: #f8fafc; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #e53e3e, #c53030); color: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; text-align: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .stat-number { font-size: 2.5em; font-weight: bold; color: #e53e3e; margin-bottom: 5px; }
+        .stat-label { color: #666; font-weight: 500; }
+        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f8fafc; font-weight: 600; color: #2d3748; }
+        tr:hover { background: #f7fafc; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 500; margin: 2px; }
+        .badge-success { background: #c6f6d5; color: #22543d; }
+        .badge-warning { background: #fef5e7; color: #c05621; }
+        .footer { margin-top: 30px; text-align: center; color: #666; }
+        .export-links { text-align: center; margin: 20px 0; }
+        .export-links a { display: inline-block; margin: 0 10px; padding: 10px 20px; background: #e53e3e; color: white; text-decoration: none; border-radius: 8px; }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr; } table { font-size: 0.9em; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚒 Feuerwehr Hamberg</h1>
+            <h2>Mitglieder-Dashboard</h2>
+            <p>Automatisch generiert am 25.9.2025, 15:30:38</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Gesamte Anmeldungen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2</div>
+                <div class="stat-label">MTA absolviert</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">25 Jahre Dienst</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">40 Jahre Dienst</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Berechtigt für Ehrenamtskarte</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50%</div>
+                <div class="stat-label">Berechtigungsquote</div>
+            </div>
+        </div>
+        
+        <div class="export-links">
+            <a href="all_members.json" download>📄 JSON Download</a>
+            <a href="all_members.csv" download>📊 CSV Download</a>
+            <a href="detailed_statistics.json" download>📈 Statistiken</a>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Geburtsdatum</th>
+                        <th>Kontakt</th>
+                        <th>Adresse</th>
+                        <th>Qualifikationen</th>
+                        <th>Status</th>
+                        <th>Anmeldung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td><strong>AAA, BBB</strong></td>
+                            <td>1344-12-11</td>
+                            <td>
+                                adsf@net.net<br>
+                                <small>123123</small>
+                            </td>
+                            <td>
+                                adsfsadfasdfasf <br>
+                                <small>12345 asdfdasf</small>
+                            </td>
+                            <td>
+                                
+                                
+                                
+                                <span class="badge badge-warning">Keine</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">Nicht berechtigt</span>
+                            </td>
+                            <td><small>25.9.2025, 15:01:23</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>ABC, ABC</strong></td>
+                            <td>1111-11-19</td>
+                            <td>
+                                max@web.de<br>
+                                <small>+4912312312312</small>
+                            </td>
+                            <td>
+                                asdfs <br>
+                                <small>12344 asdfadsf</small>
+                            </td>
+                            <td>
+                                
+                                
+                                
+                                <span class="badge badge-warning">Keine</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">Nicht berechtigt</span>
+                            </td>
+                            <td><small>25.9.2025, 15:07:22</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Max, Meier</strong></td>
+                            <td>2243-04-23</td>
+                            <td>
+                                3432@a.com<br>
+                                <small>234</small>
+                            </td>
+                            <td>
+                                afadf 34324<br>
+                                <small>23423 234</small>
+                            </td>
+                            <td>
+                                
+                                
+                                <span class="badge badge-success">40J</span>
+                                
+                            </td>
+                            <td>
+                                <span class="badge badge-success">Berechtigt</span>
+                            </td>
+                            <td><small>24.9.2025, 17:04:41</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Plankl, Max</strong></td>
+                            <td>1989-11-19</td>
+                            <td>
+                                sebastian.plankl@gmail.com<br>
+                                <small>0491711221334</small>
+                            </td>
+                            <td>
+                                Rascher Str. 3b <br>
+                                <small>92363 Hamberg</small>
+                            </td>
+                            <td>
+                                
+                                
+                                
+                                <span class="badge badge-warning">Keine</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">Nicht berechtigt</span>
+                            </td>
+                            <td><small>24.9.2025, 17:56:21</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Plankl, Sebastian</strong></td>
+                            <td>1989-11-19</td>
+                            <td>
+                                sebastian.plankl@gmail.com<br>
+                                <small>1234</small>
+                            </td>
+                            <td>
+                                Rascher Str. 3b<br>
+                                <small>92363 Hamberg</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">MTA</span>
+                                <span class="badge badge-success">25J</span>
+                                
+                                
+                            </td>
+                            <td>
+                                <span class="badge badge-success">Berechtigt</span>
+                            </td>
+                            <td><small>24.9.2025, 16:57:15</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Sebastian, Eyleen</strong></td>
+                            <td>1989-11-19</td>
+                            <td>
+                                sebastian.plankl@gmail.com<br>
+                                <small>1232</small>
+                            </td>
+                            <td>
+                                Rascher Str. 3b<br>
+                                <small>92363 Hamberg</small>
+                            </td>
+                            <td>
+                                
+                                <span class="badge badge-success">25J</span>
+                                
+                                
+                            </td>
+                            <td>
+                                <span class="badge badge-success">Berechtigt</span>
+                            </td>
+                            <td><small>24.9.2025, 17:01:16</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Sebastian, Sebastian</strong></td>
+                            <td>1989-11-19</td>
+                            <td>
+                                sebastian.plankl@gmail.com<br>
+                                <small>1232</small>
+                            </td>
+                            <td>
+                                Rascher Str. 3b<br>
+                                <small>92363 Hamberg</small>
+                            </td>
+                            <td>
+                                
+                                <span class="badge badge-success">25J</span>
+                                
+                                
+                            </td>
+                            <td>
+                                <span class="badge badge-success">Berechtigt</span>
+                            </td>
+                            <td><small>24.9.2025, 17:03:16</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Sepp, Meier</strong></td>
+                            <td>4234-02-23</td>
+                            <td>
+                                asdf@web.de<br>
+                                <small>1123213</small>
+                            </td>
+                            <td>
+                                asdfsdf <br>
+                                <small>12222 Hamberg</small>
+                            </td>
+                            <td>
+                                
+                                
+                                
+                                <span class="badge badge-warning">Keine</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">Nicht berechtigt</span>
+                            </td>
+                            <td><small>24.9.2025, 17:58:56</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>Sippl, Jochen</strong></td>
+                            <td>1988-11-11</td>
+                            <td>
+                                sepp.sippl@sippl.net<br>
+                                <small>1234</small>
+                            </td>
+                            <td>
+                                Rascher Str. 7 <br>
+                                <small>92363 Hmaberg</small>
+                            </td>
+                            <td>
+                                
+                                
+                                
+                                <span class="badge badge-warning">Keine</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-warning">Nicht berechtigt</span>
+                            </td>
+                            <td><small>25.9.2025, 14:56:20</small></td>
+                        </tr>
+                    
+                        <tr>
+                            <td><strong>cab, cab</strong></td>
+                            <td>2000-08-18</td>
+                            <td>
+                                asdf@web.de<br>
+                                <small>+491711221334</small>
+                            </td>
+                            <td>
+                                asdfdsa <br>
+                                <small>12334 asdlfkdasf</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">MTA</span>
+                                <span class="badge badge-success">25J</span>
+                                
+                                
+                            </td>
+                            <td>
+                                <span class="badge badge-success">Berechtigt</span>
+                            </td>
+                            <td><small>25.9.2025, 15:19:16</small></td>
+                        </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>🔒 <strong>Vertraulich</strong> - Nur für interne Verwendung der Feuerwehr Hamberg</p>
+            <p>Automatisch generiert durch GitHub Actions</p>
+            <p>Letzte Aktualisierung: 25.9.2025, 15:30:38</p>
+        </div>
+    </div>
+</body>
+</html>

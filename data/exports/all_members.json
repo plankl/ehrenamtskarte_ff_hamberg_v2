@@ -1,0 +1,303 @@
+{
+  "generated": "2025-09-25T15:30:38.377Z",
+  "total": 10,
+  "statistics": {
+    "total": 10,
+    "with_mta": 2,
+    "with_25_years": 4,
+    "with_40_years": 1,
+    "qualified": 5
+  },
+  "applications": [
+    {
+      "timestamp": "2025-09-25T15:01:23.981Z",
+      "person": {
+        "nachname": "AAA",
+        "vorname": "BBB",
+        "geburtsdatum": "1344-12-11",
+        "email": "adsf@net.net",
+        "telefon": "123123"
+      },
+      "adresse": {
+        "strasse": "adsfsadfasdfasf",
+        "hausnummer": "",
+        "plz": "12345",
+        "ort": "asdfdasf"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": false,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": false
+      },
+      "meta": {
+        "accessVerified": false
+      },
+      "id": "ff_ham_20250925_aaa_bbb",
+      "qualification_summary": "Keine"
+    },
+    {
+      "timestamp": "2025-09-25T15:07:22.733Z",
+      "person": {
+        "nachname": "ABC",
+        "vorname": "ABC",
+        "geburtsdatum": "1111-11-19",
+        "email": "max@web.de",
+        "telefon": "+4912312312312"
+      },
+      "adresse": {
+        "strasse": "asdfs",
+        "hausnummer": "",
+        "plz": "12344",
+        "ort": "asdfadsf"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": false,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": false
+      },
+      "meta": {
+        "accessVerified": false
+      },
+      "id": "ff_ham_20250925_abc_abc",
+      "qualification_summary": "Keine"
+    },
+    {
+      "timestamp": "2025-09-24T17:04:41.952Z",
+      "person": {
+        "nachname": "Max",
+        "vorname": "Meier",
+        "geburtsdatum": "2243-04-23",
+        "email": "3432@a.com",
+        "telefon": "234"
+      },
+      "adresse": {
+        "strasse": "afadf",
+        "hausnummer": "34324",
+        "plz": "23423",
+        "ort": "234"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": false,
+        "dienstjahre_40": true
+      },
+      "consent": {
+        "datenschutz": true
+      },
+      "meta": {
+        "accessVerified": true
+      },
+      "id": "ff_ham_20250924_max_meier",
+      "qualification_summary": "40Jahre"
+    },
+    {
+      "timestamp": "2025-09-24T17:56:21.781Z",
+      "person": {
+        "nachname": "Plankl",
+        "vorname": "Max",
+        "geburtsdatum": "1989-11-19",
+        "email": "sebastian.plankl@gmail.com",
+        "telefon": "0491711221334"
+      },
+      "adresse": {
+        "strasse": "Rascher Str. 3b",
+        "hausnummer": "",
+        "plz": "92363",
+        "ort": "Hamberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": false,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": false
+      },
+      "meta": {
+        "accessVerified": false
+      },
+      "id": "ff_ham_20250924_plankl_max",
+      "qualification_summary": "Keine"
+    },
+    {
+      "timestamp": "2025-09-24T16:57:15.564Z",
+      "person": {
+        "nachname": "Plankl",
+        "vorname": "Sebastian",
+        "geburtsdatum": "1989-11-19",
+        "email": "sebastian.plankl@gmail.com",
+        "telefon": "1234"
+      },
+      "adresse": {
+        "strasse": "Rascher Str.",
+        "hausnummer": "3b",
+        "plz": "92363",
+        "ort": "Hamberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": true,
+        "dienstjahre_25": true,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": true
+      },
+      "meta": {
+        "accessVerified": true
+      },
+      "id": "ff_ham_20250924_plankl_sebastian",
+      "qualification_summary": "MTA, 25Jahre"
+    },
+    {
+      "timestamp": "2025-09-24T17:01:16.400Z",
+      "person": {
+        "nachname": "Sebastian",
+        "vorname": "Eyleen",
+        "geburtsdatum": "1989-11-19",
+        "email": "sebastian.plankl@gmail.com",
+        "telefon": "1232"
+      },
+      "adresse": {
+        "strasse": "Rascher Str.",
+        "hausnummer": "3b",
+        "plz": "92363",
+        "ort": "Hamberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": true,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": true
+      },
+      "meta": {
+        "accessVerified": true
+      },
+      "id": "ff_ham_20250924_sebastian_eyleen",
+      "qualification_summary": "25Jahre"
+    },
+    {
+      "timestamp": "2025-09-24T17:03:16.756Z",
+      "person": {
+        "nachname": "Sebastian",
+        "vorname": "Sebastian",
+        "geburtsdatum": "1989-11-19",
+        "email": "sebastian.plankl@gmail.com",
+        "telefon": "1232"
+      },
+      "adresse": {
+        "strasse": "Rascher Str.",
+        "hausnummer": "3b",
+        "plz": "92363",
+        "ort": "Hamberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": true,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": true
+      },
+      "meta": {
+        "accessVerified": true
+      },
+      "id": "ff_ham_20250924_sebastian_sebastian",
+      "qualification_summary": "25Jahre"
+    },
+    {
+      "timestamp": "2025-09-24T17:58:56.584Z",
+      "person": {
+        "nachname": "Sepp",
+        "vorname": "Meier",
+        "geburtsdatum": "4234-02-23",
+        "email": "asdf@web.de",
+        "telefon": "1123213"
+      },
+      "adresse": {
+        "strasse": "asdfsdf",
+        "hausnummer": "",
+        "plz": "12222",
+        "ort": "Hamberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": false,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": false
+      },
+      "meta": {
+        "accessVerified": false
+      },
+      "id": "ff_ham_20250924_sepp_meier",
+      "qualification_summary": "Keine"
+    },
+    {
+      "timestamp": "2025-09-25T14:56:20.624Z",
+      "person": {
+        "nachname": "Sippl",
+        "vorname": "Jochen",
+        "geburtsdatum": "1988-11-11",
+        "email": "sepp.sippl@sippl.net",
+        "telefon": "1234"
+      },
+      "adresse": {
+        "strasse": "Rascher Str. 7",
+        "hausnummer": "",
+        "plz": "92363",
+        "ort": "Hmaberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": false,
+        "dienstjahre_25": false,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": false
+      },
+      "meta": {
+        "accessVerified": false
+      },
+      "id": "ff_ham_20250925_sippl_jochen",
+      "qualification_summary": "Keine"
+    },
+    {
+      "timestamp": "2025-09-25T15:19:16.589Z",
+      "person": {
+        "nachname": "cab",
+        "vorname": "cab",
+        "geburtsdatum": "2000-08-18",
+        "email": "asdf@web.de",
+        "telefon": "+491711221334"
+      },
+      "adresse": {
+        "strasse": "asdfdsa",
+        "hausnummer": "",
+        "plz": "12334",
+        "ort": "asdlfkdasf"
+      },
+      "qualifikationen": {
+        "mta_absolviert": true,
+        "dienstjahre_25": true,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": false
+      },
+      "meta": {
+        "accessVerified": false
+      },
+      "id": "ff_ham_20250925_cab_cab",
+      "qualification_summary": "MTA, 25Jahre"
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "generated": "2025-09-25T15:30:38.695Z",
+  "summary": {
+    "total": 10,
+    "with_mta": 2,
+    "with_25_years": 4,
+    "with_40_years": 1,
+    "qualified": 5
+  },
+  "breakdown": {
+    "age_distribution": {},
+    "location_distribution": {},
+    "qualification_combinations": {},
+    "monthly_registrations": {}
+  },
+  "members": [
+    {
+      "id": "ff_ham_20250925_aaa_bbb",
+      "name": "BBB AAA",
+      "age": 681,
+      "location": "12345 asdfdasf",
+      "qualifications": [],
+      "eligible": false,
+      "registration_date": "2025-09-25T15:01:23.981Z"
+    },
+    {
+      "id": "ff_ham_20250925_abc_abc",
+      "name": "ABC ABC",
+      "age": 914,
+      "location": "12344 asdfadsf",
+      "qualifications": [],
+      "eligible": false,
+      "registration_date": "2025-09-25T15:07:22.733Z"
+    },
+    {
+      "id": "ff_ham_20250924_max_meier",
+      "name": "Meier Max",
+      "age": -218,
+      "location": "23423 234",
+      "qualifications": [
+        "40Jahre"
+      ],
+      "eligible": true,
+      "registration_date": "2025-09-24T17:04:41.952Z"
+    },
+    {
+      "id": "ff_ham_20250924_plankl_max",
+      "name": "Max Plankl",
+      "age": 36,
+      "location": "92363 Hamberg",
+      "qualifications": [],
+      "eligible": false,
+      "registration_date": "2025-09-24T17:56:21.781Z"
+    },
+    {
+      "id": "ff_ham_20250924_plankl_sebastian",
+      "name": "Sebastian Plankl",
+      "age": 36,
+      "location": "92363 Hamberg",
+      "qualifications": [
+        "MTA",
+        "25Jahre"
+      ],
+      "eligible": true,
+      "registration_date": "2025-09-24T16:57:15.564Z"
+    },
+    {
+      "id": "ff_ham_20250924_sebastian_eyleen",
+      "name": "Eyleen Sebastian",
+      "age": 36,
+      "location": "92363 Hamberg",
+      "qualifications": [
+        "25Jahre"
+      ],
+      "eligible": true,
+      "registration_date": "2025-09-24T17:01:16.400Z"
+    },
+    {
+      "id": "ff_ham_20250924_sebastian_sebastian",
+      "name": "Sebastian Sebastian",
+      "age": 36,
+      "location": "92363 Hamberg",
+      "qualifications": [
+        "25Jahre"
+      ],
+      "eligible": true,
+      "registration_date": "2025-09-24T17:03:16.756Z"
+    },
+    {
+      "id": "ff_ham_20250924_sepp_meier",
+      "name": "Meier Sepp",
+      "age": -2209,
+      "location": "12222 Hamberg",
+      "qualifications": [],
+      "eligible": false,
+      "registration_date": "2025-09-24T17:58:56.584Z"
+    },
+    {
+      "id": "ff_ham_20250925_sippl_jochen",
+      "name": "Jochen Sippl",
+      "age": 37,
+      "location": "92363 Hmaberg",
+      "qualifications": [],
+      "eligible": false,
+      "registration_date": "2025-09-25T14:56:20.624Z"
+    },
+    {
+      "id": "ff_ham_20250925_cab_cab",
+      "name": "cab cab",
+      "age": 25,
+      "location": "12334 asdlfkdasf",
+      "qualifications": [
+        "MTA",
+        "25Jahre"
+      ],
+      "eligible": true,
+      "registration_date": "2025-09-25T15:19:16.589Z"
+    }
+  ]
+}
