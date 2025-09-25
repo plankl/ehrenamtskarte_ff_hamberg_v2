@@ -1,0 +1,26 @@
+{
+  "timestamp": "2025-09-25T20:01:00.873Z",
+  "person": {
+    "nachname": "Sippl",
+    "vorname": "Max",
+    "geburtsdatum": "1989-11-11",
+    "email": "sepp.sippl@sippl.net",
+    "telefon": "+49014121323123"
+  },
+  "adresse": {
+    "strasse_komplett": "Rascher Str. 7",
+    "plz": "92363",
+    "ort": "Hmaberg"
+  },
+  "qualifikationen": {
+    "mta_absolviert": false,
+    "dienstjahre_25": true,
+    "dienstjahre_40": false
+  },
+  "consent": {
+    "datenschutz": true
+  },
+  "meta": {
+    "passwortVorhanden": true
+  }
+}
