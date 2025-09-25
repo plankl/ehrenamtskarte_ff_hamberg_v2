@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-09-25T15:01:23.981Z",
+  "person": {
+    "nachname": "AAA",
+    "vorname": "BBB",
+    "geburtsdatum": "1344-12-11",
+    "email": "adsf@net.net",
+    "telefon": "123123"
+  },
+  "adresse": {
+    "strasse": "adsfsadfasdfasf",
+    "hausnummer": "",
+    "plz": "12345",
+    "ort": "asdfdasf"
+  },
+  "qualifikationen": {
+    "mta_absolviert": false,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  },
+  "consent": {
+    "datenschutz": false
+  },
+  "meta": {
+    "accessVerified": false
+  }
+}
