@@ -7,8 +7,8 @@
 
 ### Badges
 
-- 👥 50+ Aktive Mitglieder
-- ⏰ 24/7 Einsatzbereit
+- 👥 5000+ Aktive Mitglieder
+- ⏰ 24/70 Einsatzbereit
 - 🎖️ Ehrenamtliches Engagement
 
 ## Formular-Abschnitte
