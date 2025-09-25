@@ -21,3 +21,15 @@
     "dienstjahre_40": false
   }
 }
+
+{
+  "timestamp": "2025-09-25T15:07:24.059Z",
+  "action": "member_added",
+  "member": "ABC ABC",
+  "email": "max@web.de",
+  "qualifications": {
+    "mta_absolviert": false,
+    "dienstjahre_25": false,
+    "dienstjahre_40": false
+  }
+}
