@@ -332,33 +332,44 @@ Token eingeben:`;
             return false;
         }
         
-        // Telefonnummer - automatisch +49 vorsetzen
+        // Telefonnummer - flexiblere Validierung (E.164 Deutschland: +49 + 7–13 Ziffern)
         const telefonInput = this.form.querySelector('[name="telefon"]');
         if (telefonInput && telefonInput.value) {
-            let telefon = telefonInput.value.trim();
-            
-            // Normalisierung: Entferne alle nicht-numerischen Zeichen außer +
-            telefon = telefon.replace(/[^\d+]/g, '');
-            
-            // Wenn keine Ländervorwahl, füge +49 hinzu
-            if (!telefon.startsWith('+')) {
-                if (telefon.startsWith('0')) {
-                    telefon = '+49' + telefon.substring(1);
-                } else if (!telefon.startsWith('49')) {
-                    telefon = '+49' + telefon;
-                } else {
-                    telefon = '+' + telefon;
+            let raw = telefonInput.value.trim();
+
+            // Entferne alles außer Ziffern und +
+            let normalized = raw.replace(/[^\d+]/g, '');
+
+            // Falls Klammern, Leerzeichen etc. entfernt wurden und nichts übrig bleibt → ignorieren
+            if (!/[\d]/.test(normalized)) {
+                telefonInput.value = '';
+            } else {
+                // Ländervorwahl ergänzen
+                if (!normalized.startsWith('+')) {
+                    if (normalized.startsWith('0')) {
+                        normalized = '+49' + normalized.substring(1);
+                    } else if (normalized.startsWith('49')) {
+                        normalized = '+' + normalized;
+                    } else {
+                        normalized = '+49' + normalized;
+                    }
                 }
+
+                // Letzte Normalisierung: doppelte + verhindern
+                normalized = normalized.replace(/^\+\+/, '+');
+
+                // Prüfung: +49 gefolgt von 7–13 Ziffern (national significant number length variiert)
+                const valid = /^\+49\d{7,13}$/.test(normalized);
+                if (!valid) {
+                    // Kein harter Blocker mehr – nur Hinweis + roter Rahmen
+                    telefonInput.classList.add('field-invalid');
+                    this.setStatus('ℹ️ Telefonnummer formatiert. Bitte prüfen: Erwartet +49 gefolgt von 7–13 Ziffern.', 'info');
+                } else {
+                    telefonInput.classList.remove('field-invalid');
+                }
+
+                telefonInput.value = normalized;
             }
-            
-            // Validierung der deutschen Telefonnummer
-            if (!/^\+49\d{10,11}$/.test(telefon)) {
-                this.setStatus('❌ Bitte geben Sie eine gültige deutsche Telefonnummer ein.', 'error');
-                return false;
-            }
-            
-            // Aktualisiere das Eingabefeld
-            telefonInput.value = telefon;
         }
         
         // Qualifikationen - mindestens eine muss ausgewählt sein

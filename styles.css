@@ -679,6 +679,12 @@ body {
   transform: scaleX(1);
 }
 
+/* Inline Feld-Fehlerzustand (Telefonnummer etc.) */
+.field-input.field-invalid {
+  border-color: var(--ff-red);
+  box-shadow: 0 0 0 1px var(--ff-red);
+}
+
 .field-border {
   position: absolute;
   bottom: 0;
