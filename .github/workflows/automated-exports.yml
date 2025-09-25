@@ -1,0 +1,521 @@
+name: 📊 Automated Daily Exports
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC (07:00/08:00 German time)
+    - cron: '0 6 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-daily-exports:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔍 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 🌿 Switch to Data Branch
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@github.com'
+        
+        if git show-ref --verify --quiet refs/remotes/origin/data; then
+          git checkout data
+        else
+          echo "Data branch doesn't exist, skipping..."
+          exit 0
+        fi
+
+    - name: 📊 Generate Comprehensive Exports
+      run: |
+        echo "🚀 Starting daily export generation..."
+        
+        # Create exports directory
+        mkdir -p data/exports
+        
+        # Count member files
+        MEMBER_COUNT=$(find data/members -name "*.json" 2>/dev/null | wc -l)
+        echo "Processing $MEMBER_COUNT member files..."
+        
+        if [ $MEMBER_COUNT -eq 0 ]; then
+          echo "No member data found. Creating empty exports..."
+          
+          # Generate empty exports
+          cat > data/exports/all_members.json << EOF
+        {
+          "generated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "total": 0,
+          "applications": [],
+          "statistics": {
+            "total": 0,
+            "with_mta": 0,
+            "with_25_years": 0,
+            "with_40_years": 0,
+            "qualified": 0,
+            "percentage_qualified": 0
+          },
+          "export_info": {
+            "generated_by": "GitHub Actions",
+            "generation_type": "automated_daily",
+            "next_update": "$(date -u -d '+1 day' +%Y-%m-%dT%H:%M:%SZ)"
+          }
+        }
+        EOF
+          
+          echo "ID,Timestamp,Nachname,Vorname,Geburtsdatum,Email,Telefon,Straße,Hausnummer,PLZ,Ort,MTA,25Jahre,40Jahre,Status" > data/exports/all_members.csv
+          
+        else
+          # Process member data with Node.js
+          node << 'EOF'
+        const fs = require('fs');
+        const path = require('path');
+        
+        console.log('🔄 Processing member data...');
+        
+        // Read all member JSON files
+        const memberFiles = fs.readdirSync('data/members')
+          .filter(file => file.endsWith('.json'))
+          .map(file => {
+            try {
+              const content = fs.readFileSync(path.join('data/members', file), 'utf8');
+              return JSON.parse(content);
+            } catch (error) {
+              console.warn(`⚠️ Failed to parse ${file}:`, error.message);
+              return null;
+            }
+          })
+          .filter(Boolean);
+        
+        console.log(`✅ Successfully loaded ${memberFiles.length} member records`);
+        
+        // Calculate comprehensive statistics
+        const stats = {
+          total: memberFiles.length,
+          with_mta: memberFiles.filter(m => m.qualifikationen?.mta_absolviert).length,
+          with_25_years: memberFiles.filter(m => m.qualifikationen?.dienstjahre_25).length,
+          with_40_years: memberFiles.filter(m => m.qualifikationen?.dienstjahre_40).length,
+          qualified: memberFiles.filter(m => 
+            m.qualifikationen?.mta_absolviert || 
+            m.qualifikationen?.dienstjahre_25 || 
+            m.qualifikationen?.dienstjahre_40
+          ).length
+        };
+        
+        stats.percentage_qualified = stats.total > 0 ? Math.round((stats.qualified / stats.total) * 100) : 0;
+        
+        // Generate comprehensive JSON export with enhanced data
+        const jsonExport = {
+          generated: new Date().toISOString(),
+          total: memberFiles.length,
+          statistics: stats,
+          export_info: {
+            generated_by: "GitHub Actions",
+            generation_type: "automated_daily",
+            next_update: new Date(Date.now() + 24*60*60*1000).toISOString()
+          },
+          applications: memberFiles.map((app, index) => {
+            const birthDate = new Date(app.person.geburtsdatum);
+            const age = new Date().getFullYear() - birthDate.getFullYear();
+            
+            return {
+              ...app,
+              id: generateMemberId(app),
+              age: age,
+              qualification_summary: getQualificationSummary(app),
+              eligible_for_ehrenamtskarte: isEligible(app),
+              registration_month: new Date(app.timestamp).toISOString().slice(0, 7)
+            };
+          })
+        };
+        
+        // Helper functions
+        function generateMemberId(app) {
+          const date = new Date(app.timestamp).toISOString().slice(0,10).replace(/-/g,'');
+          const name = `${app.person.nachname}_${app.person.vorname}`.toLowerCase()
+            .replace(/[äöüß]/g, char => ({ 'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss' }[char] || char))
+            .replace(/[^a-z0-9]/g, '');
+          return `FF_HAM_${date}_${name}`;
+        }
+        
+        function getQualificationSummary(app) {
+          const quals = [];
+          if (app.qualifikationen?.mta_absolviert) quals.push('MTA');
+          if (app.qualifikationen?.dienstjahre_25) quals.push('25 Jahre');
+          if (app.qualifikationen?.dienstjahre_40) quals.push('40 Jahre');
+          return quals.length > 0 ? quals.join(', ') : 'Keine Qualifikationen';
+        }
+        
+        function isEligible(app) {
+          return app.qualifikationen?.mta_absolviert || 
+                 app.qualifikationen?.dienstjahre_25 || 
+                 app.qualifikationen?.dienstjahre_40;
+        }
+        
+        // Write JSON export
+        fs.writeFileSync('data/exports/all_members.json', JSON.stringify(jsonExport, null, 2));
+        console.log('✅ JSON export generated');
+        
+        // Generate detailed CSV export
+        const csvHeaders = [
+          'ID', 'Anmeldedatum', 'Nachname', 'Vorname', 'Geburtsdatum', 'Alter',
+          'Email', 'Telefon', 'Straße', 'Hausnummer', 'PLZ', 'Ort', 'Vollständige Adresse',
+          'MTA absolviert', '25 Jahre Dienst', '40 Jahre Dienst', 'Qualifikationen',
+          'Berechtigt für Ehrenamtskarte', 'Datenschutz zugestimmt'
+        ];
+        
+        const csvRows = memberFiles.map(app => {
+          const birthDate = new Date(app.person.geburtsdatum);
+          const age = new Date().getFullYear() - birthDate.getFullYear();
+          
+          return [
+            generateMemberId(app),
+            new Date(app.timestamp).toLocaleDateString('de-DE'),
+            app.person.nachname || '',
+            app.person.vorname || '',
+            app.person.geburtsdatum || '',
+            age,
+            app.person.email || '',
+            app.person.telefon || '',
+            app.adresse.strasse || '',
+            app.adresse.hausnummer || '',
+            app.adresse.plz || '',
+            app.adresse.ort || '',
+            `${app.adresse.strasse || ''} ${app.adresse.hausnummer || ''}, ${app.adresse.plz || ''} ${app.adresse.ort || ''}`.trim(),
+            app.qualifikationen?.mta_absolviert ? 'Ja' : 'Nein',
+            app.qualifikationen?.dienstjahre_25 ? 'Ja' : 'Nein',
+            app.qualifikationen?.dienstjahre_40 ? 'Ja' : 'Nein',
+            getQualificationSummary(app),
+            isEligible(app) ? 'Ja' : 'Nein',
+            app.consent?.datenschutz ? 'Ja' : 'Nein'
+          ];
+        });
+        
+        const csvContent = [csvHeaders, ...csvRows]
+          .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+          .join('\n');
+        
+        fs.writeFileSync('data/exports/all_members.csv', csvContent);
+        console.log('✅ CSV export generated');
+        
+        // Generate comprehensive HTML dashboard
+        const html = generateHTMLDashboard(memberFiles, stats);
+        fs.writeFileSync('data/exports/overview.html', html);
+        console.log('✅ HTML dashboard generated');
+        
+        // Generate statistical analysis
+        const statisticalAnalysis = generateStatisticalAnalysis(memberFiles, stats);
+        fs.writeFileSync('data/exports/statistical_analysis.json', JSON.stringify(statisticalAnalysis, null, 2));
+        console.log('✅ Statistical analysis generated');
+        
+        console.log('🎉 All exports completed successfully!');
+        
+        function generateHTMLDashboard(members, statistics) {
+          return `<!DOCTYPE html>
+        <html lang="de">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>🚒 Feuerwehr Hamberg - Ehrenamtskarte Dashboard</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #2d3748; line-height: 1.6; }
+                .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+                
+                .header { background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; padding: 40px; border-radius: 16px; margin-bottom: 30px; text-align: center; box-shadow: 0 10px 25px rgba(229, 62, 62, 0.3); }
+                .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 800; }
+                .header h2 { font-size: 1.5em; margin-bottom: 15px; font-weight: 400; opacity: 0.9; }
+                .header p { font-size: 1.1em; opacity: 0.8; }
+                
+                .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
+                .stat-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+                .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+                .stat-number { font-size: 3em; font-weight: 900; color: #e53e3e; margin-bottom: 10px; }
+                .stat-label { color: #718096; font-weight: 600; font-size: 1.1em; }
+                .stat-percentage { font-size: 1.2em; color: #38a169; font-weight: 700; margin-top: 5px; }
+                
+                .export-section { background: white; border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+                .export-title { font-size: 1.5em; font-weight: 700; margin-bottom: 20px; color: #2d3748; }
+                .export-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+                .export-link { display: flex; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.3s ease; }
+                .export-link:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+                .export-link-icon { font-size: 1.3em; margin-right: 10px; }
+                
+                .table-container { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 30px; }
+                .table-header { background: #f7fafc; padding: 20px; border-bottom: 2px solid #e2e8f0; }
+                .table-title { font-size: 1.4em; font-weight: 700; color: #2d3748; }
+                .table-subtitle { color: #718096; margin-top: 5px; }
+                
+                table { width: 100%; border-collapse: collapse; }
+                th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+                th { background: #f7fafc; font-weight: 700; color: #4a5568; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.5px; }
+                tr:hover { background: #f7fafc; }
+                
+                .badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; margin: 2px; }
+                .badge-success { background: #c6f6d5; color: #22543d; }
+                .badge-warning { background: #fef5e7; color: #c05621; }
+                .badge-info { background: #bee3f8; color: #2c5282; }
+                
+                .footer { background: white; border-radius: 16px; padding: 30px; text-align: center; color: #718096; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+                .footer strong { color: #e53e3e; }
+                .footer p { margin-bottom: 10px; }
+                
+                @media (max-width: 768px) {
+                    .stats-grid { grid-template-columns: 1fr; }
+                    .export-links { grid-template-columns: 1fr; }
+                    table { font-size: 0.9em; }
+                    .header h1 { font-size: 2em; }
+                    .stat-number { font-size: 2.5em; }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🚒 Feuerwehr Hamberg</h1>
+                    <h2>Ehrenamtskarte - Mitglieder Dashboard</h2>
+                    <p>Automatisch generiert am ${new Date().toLocaleString('de-DE', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    })}</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${statistics.total}</div>
+                        <div class="stat-label">Gesamte Anmeldungen</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${statistics.with_mta}</div>
+                        <div class="stat-label">MTA absolviert</div>
+                        <div class="stat-percentage">${statistics.total > 0 ? Math.round((statistics.with_mta / statistics.total) * 100) : 0}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${statistics.with_25_years}</div>
+                        <div class="stat-label">25 Jahre Dienst</div>
+                        <div class="stat-percentage">${statistics.total > 0 ? Math.round((statistics.with_25_years / statistics.total) * 100) : 0}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${statistics.with_40_years}</div>
+                        <div class="stat-label">40 Jahre Dienst</div>
+                        <div class="stat-percentage">${statistics.total > 0 ? Math.round((statistics.with_40_years / statistics.total) * 100) : 0}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${statistics.qualified}</div>
+                        <div class="stat-label">Berechtigt für Ehrenamtskarte</div>
+                        <div class="stat-percentage">${statistics.percentage_qualified}%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${statistics.total - statistics.qualified}</div>
+                        <div class="stat-label">Nicht berechtigt</div>
+                        <div class="stat-percentage">${100 - statistics.percentage_qualified}%</div>
+                    </div>
+                </div>
+                
+                <div class="export-section">
+                    <div class="export-title">📥 Export-Dateien herunterladen</div>
+                    <div class="export-links">
+                        <a href="all_members.json" download class="export-link">
+                            <span class="export-link-icon">📄</span>
+                            JSON Komplett-Export
+                        </a>
+                        <a href="all_members.csv" download class="export-link">
+                            <span class="export-link-icon">📊</span>
+                            CSV für Excel
+                        </a>
+                        <a href="statistical_analysis.json" download class="export-link">
+                            <span class="export-link-icon">📈</span>
+                            Detaillierte Statistiken
+                        </a>
+                        <a href="overview.html" download class="export-link">
+                            <span class="export-link-icon">🌐</span>
+                            HTML Dashboard
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-header">
+                        <div class="table-title">Mitglieder-Übersicht</div>
+                        <div class="table-subtitle">Alle registrierten Mitglieder mit Qualifikationen und Status</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Alter</th>
+                                <th>Kontakt</th>
+                                <th>Standort</th>
+                                <th>Qualifikationen</th>
+                                <th>Status</th>
+                                <th>Anmeldung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${members.map(app => {
+                                const age = new Date().getFullYear() - new Date(app.person.geburtsdatum).getFullYear();
+                                const isEligible = app.qualifikationen?.mta_absolviert || app.qualifikationen?.dienstjahre_25 || app.qualifikationen?.dienstjahre_40;
+                                
+                                return `
+                                <tr>
+                                    <td>
+                                        <strong>${app.person.nachname}, ${app.person.vorname}</strong><br>
+                                        <small>Geb. ${app.person.geburtsdatum}</small>
+                                    </td>
+                                    <td>${age} Jahre</td>
+                                    <td>
+                                        ${app.person.email}<br>
+                                        <small>${app.person.telefon}</small>
+                                    </td>
+                                    <td>
+                                        ${app.adresse.strasse} ${app.adresse.hausnummer}<br>
+                                        <small>${app.adresse.plz} ${app.adresse.ort}</small>
+                                    </td>
+                                    <td>
+                                        ${app.qualifikationen?.mta_absolviert ? '<span class="badge badge-success">MTA</span>' : ''}
+                                        ${app.qualifikationen?.dienstjahre_25 ? '<span class="badge badge-info">25J</span>' : ''}
+                                        ${app.qualifikationen?.dienstjahre_40 ? '<span class="badge badge-info">40J</span>' : ''}
+                                        ${!app.qualifikationen?.mta_absolviert && !app.qualifikationen?.dienstjahre_25 && !app.qualifikationen?.dienstjahre_40 ? 
+                                          '<span class="badge badge-warning">Keine</span>' : ''}
+                                    </td>
+                                    <td>
+                                        ${isEligible ? 
+                                          '<span class="badge badge-success">✅ Berechtigt</span>' : 
+                                          '<span class="badge badge-warning">❌ Nicht berechtigt</span>'}
+                                    </td>
+                                    <td>
+                                        <small>${new Date(app.timestamp).toLocaleDateString('de-DE')}</small><br>
+                                        <small>${new Date(app.timestamp).toLocaleTimeString('de-DE')}</small>
+                                    </td>
+                                </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="footer">
+                    <p>🔒 <strong>Vertraulich</strong> - Nur für interne Verwendung der Feuerwehr Hamberg</p>
+                    <p>📊 Dashboard automatisch generiert durch GitHub Actions</p>
+                    <p>🔄 Nächste Aktualisierung: ${new Date(Date.now() + 24*60*60*1000).toLocaleString('de-DE')}</p>
+                    <p>💻 Repository: github.com/plankl/ehrenamtskarte_ff_hamberg_v2</p>
+                </div>
+            </div>
+        </body>
+        </html>`;
+        }
+        
+        function generateStatisticalAnalysis(members, basicStats) {
+          // Age distribution
+          const ageDistribution = {};
+          const locationDistribution = {};
+          const qualificationCombinations = {};
+          const monthlyRegistrations = {};
+          
+          members.forEach(member => {
+            // Age analysis
+            const age = new Date().getFullYear() - new Date(member.person.geburtsdatum).getFullYear();
+            const ageGroup = age < 30 ? 'Under 30' : age < 50 ? '30-49' : age < 65 ? '50-64' : '65+';
+            ageDistribution[ageGroup] = (ageDistribution[ageGroup] || 0) + 1;
+            
+            // Location analysis
+            const location = `${member.adresse.plz} ${member.adresse.ort}`;
+            locationDistribution[location] = (locationDistribution[location] || 0) + 1;
+            
+            // Qualification combinations
+            const quals = [];
+            if (member.qualifikationen?.mta_absolviert) quals.push('MTA');
+            if (member.qualifikationen?.dienstjahre_25) quals.push('25J');
+            if (member.qualifikationen?.dienstjahre_40) quals.push('40J');
+            const qualKey = quals.length > 0 ? quals.join('+') : 'None';
+            qualificationCombinations[qualKey] = (qualificationCombinations[qualKey] || 0) + 1;
+            
+            // Monthly registrations
+            const month = new Date(member.timestamp).toISOString().slice(0, 7);
+            monthlyRegistrations[month] = (monthlyRegistrations[month] || 0) + 1;
+          });
+          
+          return {
+            generated: new Date().toISOString(),
+            summary: basicStats,
+            detailed_analysis: {
+              age_distribution: ageDistribution,
+              location_distribution: locationDistribution,
+              qualification_combinations: qualificationCombinations,
+              monthly_registrations: monthlyRegistrations,
+              average_age: members.length > 0 ? Math.round(
+                members.reduce((sum, m) => sum + (new Date().getFullYear() - new Date(m.person.geburtsdatum).getFullYear()), 0) / members.length
+              ) : 0,
+              most_common_location: Object.entries(locationDistribution).sort((a, b) => b[1] - a[1])[0]?.[0] || 'N/A',
+              qualification_coverage: {
+                mta_only: members.filter(m => m.qualifikationen?.mta_absolviert && !m.qualifikationen?.dienstjahre_25 && !m.qualifikationen?.dienstjahre_40).length,
+                years_25_only: members.filter(m => !m.qualifikationen?.mta_absolviert && m.qualifikationen?.dienstjahre_25 && !m.qualifikationen?.dienstjahre_40).length,
+                years_40_only: members.filter(m => !m.qualifikationen?.mta_absolviert && !m.qualifikationen?.dienstjahre_25 && m.qualifikationen?.dienstjahre_40).length,
+                multiple_qualifications: members.filter(m => 
+                  [m.qualifikationen?.mta_absolviert, m.qualifikationen?.dienstjahre_25, m.qualifikationen?.dienstjahre_40]
+                  .filter(Boolean).length > 1
+                ).length
+              }
+            },
+            data_quality: {
+              complete_profiles: members.filter(m => 
+                m.person.nachname && m.person.vorname && m.person.email && 
+                m.person.telefon && m.adresse.plz && m.adresse.ort
+              ).length,
+              missing_phone: members.filter(m => !m.person.telefon).length,
+              missing_address: members.filter(m => !m.adresse.plz || !m.adresse.ort).length,
+              data_completeness_percentage: Math.round((
+                members.filter(m => 
+                  m.person.nachname && m.person.vorname && m.person.email && 
+                  m.person.telefon && m.adresse.plz && m.adresse.ort
+                ).length / members.length
+              ) * 100)
+            }
+          };
+        }
+        EOF
+        fi
+
+    - name: 📝 Update Daily Processing Log
+      run: |
+        mkdir -p data/logs
+        
+        LOG_FILE="data/logs/daily-exports-$(date -u +%Y-%m).log"
+        echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) - Daily export generation completed - Members: $MEMBER_COUNT - Status: Success" >> "$LOG_FILE"
+
+    - name: 🚀 Commit and Push Updates
+      run: |
+        git add .
+        
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "📊 Daily automated exports - $(date -u +%Y-%m-%d) - $MEMBER_COUNT members"
+          git push origin data
+        fi
+
+    - name: 📊 Export Summary
+      run: |
+        echo "## 📊 Daily Export Generation Completed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Date:** $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)" >> $GITHUB_STEP_SUMMARY
+        echo "**Members Processed:** $MEMBER_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📁 Generated Files:" >> $GITHUB_STEP_SUMMARY
+        echo "- 📄 \`overview.html\` - Interactive dashboard" >> $GITHUB_STEP_SUMMARY
+        echo "- 📋 \`all_members.json\` - Complete data export" >> $GITHUB_STEP_SUMMARY
+        echo "- 📊 \`all_members.csv\` - Excel-compatible format" >> $GITHUB_STEP_SUMMARY
+        echo "- 📈 \`statistical_analysis.json\` - Detailed analytics" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Access files:** [Data Branch Exports](https://github.com/${{ github.repository }}/tree/data/data/exports)" >> $GITHUB_STEP_SUMMARY

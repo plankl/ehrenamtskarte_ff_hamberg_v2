@@ -1,0 +1,372 @@
+name: 🔒 Data Backup & Security Monitor
+
+on:
+  schedule:
+    # Weekly backup every Sunday at 03:00 UTC
+    - cron: '0 3 * * 0'
+    # Security check daily at 23:30 UTC
+    - cron: '30 23 * * *'
+  
+  # Manual triggers for emergency backup
+  workflow_dispatch:
+    inputs:
+      backup_type:
+        description: 'Type of backup to perform'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+        - full
+        - incremental
+        - emergency
+      include_logs:
+        description: 'Include processing logs in backup'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  backup-and-monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 🔍 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 🌿 Switch to Data Branch
+      run: |
+        git config --global user.name 'GitHub Actions Backup'
+        git config --global user.email 'backup@github.com'
+        
+        if git show-ref --verify --quiet refs/remotes/origin/data; then
+          git checkout data
+          echo "DATA_BRANCH_EXISTS=true" >> $GITHUB_ENV
+        else
+          echo "DATA_BRANCH_EXISTS=false" >> $GITHUB_ENV
+          echo "⚠️ Data branch doesn't exist - backup skipped"
+        fi
+
+    - name: 📊 Analyze Data State
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        echo "🔍 Analyzing current data state..."
+        
+        # Count members
+        MEMBER_COUNT=$(find data/members -name "*.json" 2>/dev/null | wc -l || echo "0")
+        echo "MEMBER_COUNT=$MEMBER_COUNT" >> $GITHUB_ENV
+        
+        # Check for exports
+        EXPORT_COUNT=$(find data/exports -name "*.json" -o -name "*.csv" -o -name "*.html" 2>/dev/null | wc -l || echo "0")
+        echo "EXPORT_COUNT=$EXPORT_COUNT" >> $GITHUB_ENV
+        
+        # Calculate data size
+        DATA_SIZE=$(du -sh data/ 2>/dev/null | cut -f1 || echo "0B")
+        echo "DATA_SIZE=$DATA_SIZE" >> $GITHUB_ENV
+        
+        # Get latest activity
+        LATEST_MEMBER=$(find data/members -name "*.json" -exec stat -f "%m %N" {} \; 2>/dev/null | sort -nr | head -1 | cut -d' ' -f2- || echo "none")
+        echo "LATEST_MEMBER=$LATEST_MEMBER" >> $GITHUB_ENV
+        
+        echo "📊 Analysis Complete: $MEMBER_COUNT members, $EXPORT_COUNT exports, $DATA_SIZE total"
+
+    - name: 🔒 Security Check
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        echo "🔐 Running security analysis..."
+        
+        # Check for suspicious file sizes
+        echo "Checking for unusually large files..."
+        find data/ -type f -size +10M 2>/dev/null | while read file; do
+          size=$(du -h "$file" | cut -f1)
+          echo "⚠️ Large file detected: $file ($size)"
+          echo "LARGE_FILES_FOUND=true" >> $GITHUB_ENV
+        done
+        
+        # Check for invalid JSON files
+        echo "Validating JSON integrity..."
+        INVALID_JSON=0
+        find data/members -name "*.json" 2>/dev/null | while read file; do
+          if ! python3 -m json.tool "$file" > /dev/null 2>&1; then
+            echo "❌ Invalid JSON: $file"
+            INVALID_JSON=$((INVALID_JSON + 1))
+          fi
+        done
+        echo "INVALID_JSON_COUNT=$INVALID_JSON" >> $GITHUB_ENV
+        
+        # Check data structure consistency
+        echo "Checking data structure consistency..."
+        python3 << 'EOF'
+        import json
+        import os
+        import glob
+        
+        print("🔍 Analyzing data structure consistency...")
+        
+        member_files = glob.glob('data/members/*.json')
+        issues = []
+        
+        for file_path in member_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                # Check required fields
+                required_fields = ['timestamp', 'person', 'adresse', 'qualifikationen', 'consent']
+                for field in required_fields:
+                    if field not in data:
+                        issues.append(f"Missing field '{field}' in {file_path}")
+                
+                # Check person fields
+                if 'person' in data:
+                    person_fields = ['nachname', 'vorname', 'geburtsdatum', 'email']
+                    for field in person_fields:
+                        if field not in data['person'] or not data['person'][field]:
+                            issues.append(f"Missing/empty person.{field} in {file_path}")
+                
+                # Check address fields
+                if 'adresse' in data:
+                    address_fields = ['plz', 'ort']
+                    for field in address_fields:
+                        if field not in data['adresse'] or not data['adresse'][field]:
+                            issues.append(f"Missing/empty adresse.{field} in {file_path}")
+                
+                # Validate postal code (5 digits)
+                if 'adresse' in data and 'plz' in data['adresse']:
+                    plz = str(data['adresse']['plz'])
+                    if not plz.isdigit() or len(plz) != 5:
+                        issues.append(f"Invalid postal code '{plz}' in {file_path}")
+                
+                # Validate birth year (not before 1930)
+                if 'person' in data and 'geburtsdatum' in data['person']:
+                    try:
+                        birth_year = int(data['person']['geburtsdatum'][:4])
+                        if birth_year < 1930:
+                            issues.append(f"Birth year {birth_year} before 1930 in {file_path}")
+                    except (ValueError, IndexError):
+                        issues.append(f"Invalid birth date format in {file_path}")
+                        
+            except Exception as e:
+                issues.append(f"Failed to process {file_path}: {str(e)}")
+        
+        if issues:
+            print("❌ Data structure issues found:")
+            for issue in issues[:10]:  # Limit to first 10 issues
+                print(f"  - {issue}")
+            if len(issues) > 10:
+                print(f"  ... and {len(issues) - 10} more issues")
+            
+            with open('data/logs/data-integrity-issues.log', 'w') as f:
+                f.write(f"Data integrity issues found on {os.popen('date -u').read().strip()}:\n\n")
+                for issue in issues:
+                    f.write(f"- {issue}\n")
+        else:
+            print("✅ All data structure checks passed")
+        
+        print(f"STRUCTURE_ISSUES_COUNT={len(issues)}")
+        os.system(f"echo 'STRUCTURE_ISSUES_COUNT={len(issues)}' >> $GITHUB_ENV")
+        EOF
+
+    - name: 💾 Create Backup
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        BACKUP_TYPE="${{ github.event.inputs.backup_type || 'scheduled' }}"
+        TIMESTAMP=$(date -u +%Y%m%d_%H%M%S)
+        BACKUP_DIR="data/backups/${TIMESTAMP}_${BACKUP_TYPE}"
+        
+        echo "📦 Creating $BACKUP_TYPE backup in $BACKUP_DIR..."
+        mkdir -p "$BACKUP_DIR"
+        
+        # Copy member data
+        if [ -d "data/members" ]; then
+          cp -r data/members "$BACKUP_DIR/"
+          echo "✅ Member data backed up"
+        fi
+        
+        # Copy exports if they exist
+        if [ -d "data/exports" ]; then
+          cp -r data/exports "$BACKUP_DIR/"
+          echo "✅ Export data backed up"
+        fi
+        
+        # Copy logs if requested
+        if [ "${{ github.event.inputs.include_logs }}" = "true" ] && [ -d "data/logs" ]; then
+          cp -r data/logs "$BACKUP_DIR/"
+          echo "✅ Log data backed up"
+        fi
+        
+        # Create backup metadata
+        cat > "$BACKUP_DIR/backup_metadata.json" << EOF
+        {
+          "backup_timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "backup_type": "$BACKUP_TYPE",
+          "triggered_by": "${{ github.event_name }}",
+          "member_count": $MEMBER_COUNT,
+          "export_count": $EXPORT_COUNT,
+          "data_size": "$DATA_SIZE",
+          "git_commit": "$(git rev-parse HEAD)",
+          "structure_issues": $STRUCTURE_ISSUES_COUNT,
+          "backup_size": "$(du -sh $BACKUP_DIR | cut -f1)"
+        }
+        EOF
+        
+        # Create backup summary
+        cat > "$BACKUP_DIR/README.md" << EOF
+        # 🔒 Feuerwehr Hamberg - Data Backup
+        
+        **Backup created:** $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)  
+        **Backup type:** $BACKUP_TYPE  
+        **Triggered by:** ${{ github.event_name }}  
+        
+        ## 📊 Backup Contents
+        - **Members:** $MEMBER_COUNT files
+        - **Exports:** $EXPORT_COUNT files  
+        - **Data size:** $DATA_SIZE
+        - **Structure issues:** $STRUCTURE_ISSUES_COUNT
+        
+        ## 📁 Directory Structure
+        \`\`\`
+        $BACKUP_DIR/
+        ├── members/          # Member JSON files
+        ├── exports/          # Generated exports
+        $([ "${{ github.event.inputs.include_logs }}" = "true" ] && echo "├── logs/             # Processing logs")
+        ├── backup_metadata.json
+        └── README.md
+        \`\`\`
+        
+        ## 🔐 Security Notes
+        - This backup contains personal data - handle with care
+        - Only authorized personnel should access these files
+        - Delete backup when no longer needed
+        
+        ---
+        *Generated by GitHub Actions Backup System*
+        EOF
+        
+        echo "BACKUP_PATH=$BACKUP_DIR" >> $GITHUB_ENV
+        echo "📦 Backup created successfully at $BACKUP_DIR"
+
+    - name: 🧹 Cleanup Old Backups
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        echo "🧹 Cleaning up old backups..."
+        
+        # Keep only last 10 backups
+        cd data/backups 2>/dev/null || exit 0
+        
+        BACKUP_COUNT=$(ls -1 | wc -l)
+        if [ $BACKUP_COUNT -gt 10 ]; then
+          echo "Found $BACKUP_COUNT backups, cleaning up oldest..."
+          ls -1t | tail -n +11 | xargs rm -rf
+          echo "✅ Cleanup completed - kept 10 most recent backups"
+        else
+          echo "Only $BACKUP_COUNT backups found - no cleanup needed"
+        fi
+
+    - name: 📊 Generate Health Report
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        REPORT_FILE="data/logs/health-report-$(date -u +%Y-%m-%d).json"
+        mkdir -p data/logs
+        
+        cat > "$REPORT_FILE" << EOF
+        {
+          "report_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+          "system_health": {
+            "member_count": $MEMBER_COUNT,
+            "export_count": $EXPORT_COUNT,
+            "data_size": "$DATA_SIZE",
+            "latest_activity": "$LATEST_MEMBER",
+            "structure_issues": $STRUCTURE_ISSUES_COUNT,
+            "invalid_json_files": ${INVALID_JSON_COUNT:-0}
+          },
+          "backup_status": {
+            "backup_created": true,
+            "backup_path": "$BACKUP_PATH",
+            "backup_type": "${{ github.event.inputs.backup_type || 'scheduled' }}"
+          },
+          "recommendations": $(python3 << 'PYTHON'
+        import json
+        
+        recommendations = []
+        
+        if int(os.environ.get('STRUCTURE_ISSUES_COUNT', '0')) > 0:
+            recommendations.append("Review and fix data structure issues in member files")
+        
+        if int(os.environ.get('INVALID_JSON_COUNT', '0')) > 0:
+            recommendations.append("Repair invalid JSON files in member data")
+        
+        if os.environ.get('LARGE_FILES_FOUND') == 'true':
+            recommendations.append("Investigate unusually large files for potential issues")
+        
+        if int(os.environ.get('MEMBER_COUNT', '0')) == 0:
+            recommendations.append("No member data found - check data collection process")
+        
+        if not recommendations:
+            recommendations.append("System operating normally - no issues detected")
+        
+        print(json.dumps(recommendations, indent=2))
+        PYTHON
+        )
+        }
+        EOF
+        
+        echo "📊 Health report generated: $REPORT_FILE"
+
+    - name: 🚀 Commit Backup and Reports
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        git add .
+        
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "🔒 Automated backup and health check - $(date -u +%Y-%m-%d) - $MEMBER_COUNT members"
+          git push origin data
+        fi
+
+    - name: 📧 Backup Summary
+      if: env.DATA_BRANCH_EXISTS == 'true'
+      run: |
+        echo "## 🔒 Backup & Security Check Completed" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Date:** $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)" >> $GITHUB_STEP_SUMMARY
+        echo "**Backup Type:** ${{ github.event.inputs.backup_type || 'scheduled' }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📊 System Status:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Members:** $MEMBER_COUNT files" >> $GITHUB_STEP_SUMMARY
+        echo "- **Exports:** $EXPORT_COUNT files" >> $GITHUB_STEP_SUMMARY
+        echo "- **Data Size:** $DATA_SIZE" >> $GITHUB_STEP_SUMMARY
+        echo "- **Structure Issues:** $STRUCTURE_ISSUES_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "- **Invalid JSON:** ${INVALID_JSON_COUNT:-0}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 💾 Backup Details:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Location:** \`$BACKUP_PATH\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Includes Logs:** ${{ github.event.inputs.include_logs || 'true' }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ $STRUCTURE_ISSUES_COUNT -gt 0 ] || [ ${INVALID_JSON_COUNT:-0} -gt 0 ]; then
+          echo "### ⚠️ Issues Detected:" >> $GITHUB_STEP_SUMMARY
+          echo "Review the health report in the data branch for details." >> $GITHUB_STEP_SUMMARY
+        else
+          echo "### ✅ All Checks Passed" >> $GITHUB_STEP_SUMMARY
+          echo "System is operating normally with no issues detected." >> $GITHUB_STEP_SUMMARY
+        fi
+
+    - name: 🚨 Alert on Critical Issues
+      if: env.DATA_BRANCH_EXISTS == 'true' && (env.STRUCTURE_ISSUES_COUNT > '5' || env.INVALID_JSON_COUNT > '0')
+      run: |
+        echo "🚨 CRITICAL ISSUES DETECTED!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Structure Issues:** $STRUCTURE_ISSUES_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "**Invalid JSON Files:** ${INVALID_JSON_COUNT:-0}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Action Required:** Immediate review of data integrity issues." >> $GITHUB_STEP_SUMMARY
+        
+        # You could add webhook/email notifications here if needed
+        echo "::warning::Critical data integrity issues detected - review required"
