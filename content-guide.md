@@ -1,18 +1,121 @@
-# 🚒 Feuerwehr Hamberg - Ehrenamtskarte Content
+# 🚒 Feuerwehr Hamberg - Markdown Content System
 
-> Diese Datei dient als Referenz. Der eigentliche Inhalt wird über `content.json` gesteuert.
+## 📝 Einfache Bearbeitung mit Markdown
 
-## 📝 Bearbeitungsanleitung
+Das System nutzt jetzt **zwei separate Markdown-Dateien**:
 
-Um den Inhalt der Website zu ändern:
+### 📁 Dateien
 
-1. **Einfache Textänderungen:** Bearbeite die `content.json` Datei
-2. **Strukturelle Änderungen:** Nutze diese Markdown-Datei als Referenz
-3. **Nach Änderungen:** Seite neu laden - Änderungen werden automatisch übernommen
+- **`content-registration.md`** → Registrierungs-Bereich
+- **`content-info.md`** → Informations-Bereich
+
+## � So bearbeitest du die Inhalte:
+
+### 1. Datei öffnen
+
+Öffne die gewünschte `.md` Datei in einem Texteditor
+
+### 2. Text bearbeiten
+
+Schreibe einfach in **normalem Markdown**:
+
+```markdown
+## Meine neue Überschrift
+
+Das ist normaler Text mit **fetten** und _kursiven_ Bereichen.
+
+### Unterüberschrift
+
+- Listenpunkt 1
+- Listenpunkt 2
+
+[Link zu Website](https://example.com)
+```
+
+### 3. Speichern & Aktualisieren
+
+Speichere die Datei → Lade Website neu → **Fertig!** ✨
+
+## 📋 Verfügbare Markdown-Formatierung
+
+### Textstile
+
+- `**fett**` → **fett**
+- `*kursiv*` → _kursiv_
+- `[Link-Text](URL)` → Links
+
+### Überschriften
+
+```markdown
+## Hauptüberschrift
+
+### Unterüberschrift
+
+#### Kleine Überschrift
+```
+
+### Listen
+
+```markdown
+- Punkt 1
+- Punkt 2
+- Punkt 3
+```
+
+### Spezielle Bereiche
+
+```markdown
+**Wichtig:** Hervorgehobener Text
+```
+
+## 🎯 Dateien-Struktur
+
+### content-registration.md
+
+Steuert:
+
+- Hero-Bereich (Titel, Untertitel, Badges)
+- Formular-Beschriftungen
+- Submit-Button
+
+### content-info.md
+
+Steuert:
+
+- Alle 6 Info-Karten
+- Kontaktinformationen
+- Detaillierte Beschreibungen
+
+## 💡 Tipps für die Bearbeitung
+
+### ✅ Do's
+
+- Verwende **klare Überschriften**
+- Strukturiere mit **Listen**
+- Nutze **fette Schrift** für wichtige Begriffe
+- Teste nach Änderungen immer die Website
+
+### ❌ Don'ts
+
+- Keine HTML-Tags nötig
+- Keine komplizierte Formatierung
+- Icons in Überschriften nicht ändern (🚒 🎫 etc.)
+
+## 🔧 Sofort loslegen
+
+1. **Öffne** `content-info.md`
+2. **Suche** den Bereich den du ändern willst
+3. **Bearbeite** den Text in normalem Deutsch
+4. **Speichere** die Datei
+5. **Lade** die Website neu
+
+**So einfach ist das!** 🎉
 
 ---
 
-## 🎯 Hero-Bereich
+## 📚 Referenz-Inhalte
+
+Unten findest du zur Referenz die aktuellen Inhalte:
 
 **Haupttitel:** Feuerwehr Hamberg  
 **Untertitel:** Ehrenamtskarte Registrierung
