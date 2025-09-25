@@ -1,0 +1,11 @@
+{
+  "backup_timestamp": "2025-09-25T23:37:10Z",
+  "backup_type": "scheduled",
+  "triggered_by": "schedule",
+  "member_count": 1,
+  "export_count": 0,
+  "data_size": "44K",
+  "git_commit": "1e57b0115a711ff70668ba132b1432c3c4cb3ba7",
+  "structure_issues": 0,
+  "backup_size": "24K"
+}
