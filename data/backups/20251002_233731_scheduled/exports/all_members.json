@@ -1,0 +1,50 @@
+{
+  "generated": "2025-10-02T06:31:47.448Z",
+  "total": 1,
+  "statistics": {
+    "total": 1,
+    "with_mta": 1,
+    "with_25_years": 0,
+    "with_40_years": 0,
+    "qualified": 1,
+    "percentage_qualified": 100
+  },
+  "export_info": {
+    "generated_by": "GitHub Actions",
+    "generation_type": "automated_daily",
+    "next_update": "2025-10-03T06:31:47.508Z"
+  },
+  "applications": [
+    {
+      "timestamp": "2025-09-25T20:11:44.481Z",
+      "person": {
+        "nachname": "Plankl",
+        "vorname": "Sebastian",
+        "geburtsdatum": "1989-11-19",
+        "email": "sebastian.plankl@gmail.com",
+        "telefon": "+491711221334"
+      },
+      "adresse": {
+        "strasse_komplett": "Rascher Str. 3b",
+        "plz": "92363",
+        "ort": "Hamberg"
+      },
+      "qualifikationen": {
+        "mta_absolviert": true,
+        "dienstjahre_25": false,
+        "dienstjahre_40": false
+      },
+      "consent": {
+        "datenschutz": true
+      },
+      "meta": {
+        "passwortVorhanden": true
+      },
+      "id": "FF_HAM_20250925_planklsebastian",
+      "age": 36,
+      "qualification_summary": "MTA",
+      "eligible_for_ehrenamtskarte": true,
+      "registration_month": "2025-09"
+    }
+  ]
+}

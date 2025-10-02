@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚒 Feuerwehr Hamberg - Ehrenamtskarte Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #2d3748; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        
+        .header { background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); color: white; padding: 40px; border-radius: 16px; margin-bottom: 30px; text-align: center; box-shadow: 0 10px 25px rgba(229, 62, 62, 0.3); }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; font-weight: 800; }
+        .header h2 { font-size: 1.5em; margin-bottom: 15px; font-weight: 400; opacity: 0.9; }
+        .header p { font-size: 1.1em; opacity: 0.8; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .stat-number { font-size: 3em; font-weight: 900; color: #e53e3e; margin-bottom: 10px; }
+        .stat-label { color: #718096; font-weight: 600; font-size: 1.1em; }
+        .stat-percentage { font-size: 1.2em; color: #38a169; font-weight: 700; margin-top: 5px; }
+        
+        .export-section { background: white; border-radius: 16px; padding: 30px; margin-bottom: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .export-title { font-size: 1.5em; font-weight: 700; margin-bottom: 20px; color: #2d3748; }
+        .export-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+        .export-link { display: flex; align-items: center; padding: 15px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 12px; font-weight: 600; transition: all 0.3s ease; }
+        .export-link:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4); }
+        .export-link-icon { font-size: 1.3em; margin-right: 10px; }
+        
+        .table-container { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 30px; }
+        .table-header { background: #f7fafc; padding: 20px; border-bottom: 2px solid #e2e8f0; }
+        .table-title { font-size: 1.4em; font-weight: 700; color: #2d3748; }
+        .table-subtitle { color: #718096; margin-top: 5px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f7fafc; font-weight: 700; color: #4a5568; font-size: 0.95em; text-transform: uppercase; letter-spacing: 0.5px; }
+        tr:hover { background: #f7fafc; }
+        
+        .badge { display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.85em; font-weight: 600; margin: 2px; }
+        .badge-success { background: #c6f6d5; color: #22543d; }
+        .badge-warning { background: #fef5e7; color: #c05621; }
+        .badge-info { background: #bee3f8; color: #2c5282; }
+        
+        .footer { background: white; border-radius: 16px; padding: 30px; text-align: center; color: #718096; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .footer strong { color: #e53e3e; }
+        .footer p { margin-bottom: 10px; }
+        
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .export-links { grid-template-columns: 1fr; }
+            table { font-size: 0.9em; }
+            .header h1 { font-size: 2em; }
+            .stat-number { font-size: 2.5em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚒 Feuerwehr Hamberg</h1>
+            <h2>Ehrenamtskarte - Mitglieder Dashboard</h2>
+            <p>Automatisch generiert am Donnerstag, 2. Oktober 2025 um 06:31</p>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Gesamte Anmeldungen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">MTA absolviert</div>
+                <div class="stat-percentage">100%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">25 Jahre Dienst</div>
+                <div class="stat-percentage">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">40 Jahre Dienst</div>
+                <div class="stat-percentage">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Berechtigt für Ehrenamtskarte</div>
+                <div class="stat-percentage">100%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Nicht berechtigt</div>
+                <div class="stat-percentage">0%</div>
+            </div>
+        </div>
+        
+        <div class="export-section">
+            <div class="export-title">📥 Export-Dateien herunterladen</div>
+            <div class="export-links">
+                <a href="all_members.json" download class="export-link">
+                    <span class="export-link-icon">📄</span>
+                    JSON Komplett-Export
+                </a>
+                <a href="all_members.csv" download class="export-link">
+                    <span class="export-link-icon">📊</span>
+                    CSV für Excel
+                </a>
+                <a href="statistical_analysis.json" download class="export-link">
+                    <span class="export-link-icon">📈</span>
+                    Detaillierte Statistiken
+                </a>
+                <a href="overview.html" download class="export-link">
+                    <span class="export-link-icon">🌐</span>
+                    HTML Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">Mitglieder-Übersicht</div>
+                <div class="table-subtitle">Alle registrierten Mitglieder mit Qualifikationen und Status</div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Alter</th>
+                        <th>Kontakt</th>
+                        <th>Standort</th>
+                        <th>Qualifikationen</th>
+                        <th>Status</th>
+                        <th>Anmeldung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            <td>
+                                <strong>Plankl, Sebastian</strong><br>
+                                <small>Geb. 1989-11-19</small>
+                            </td>
+                            <td>36 Jahre</td>
+                            <td>
+                                sebastian.plankl@gmail.com<br>
+                                <small>+491711221334</small>
+                            </td>
+                            <td>
+                                undefined undefined<br>
+                                <small>92363 Hamberg</small>
+                            </td>
+                            <td>
+                                <span class="badge badge-success">MTA</span>
+                                
+                                
+                                
+                            </td>
+                            <td>
+                                <span class="badge badge-success">✅ Berechtigt</span>
+                            </td>
+                            <td>
+                                <small>25.9.2025</small><br>
+                                <small>20:11:44</small>
+                            </td>
+                        </tr>
+                        
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>🔒 <strong>Vertraulich</strong> - Nur für interne Verwendung der Feuerwehr Hamberg</p>
+            <p>📊 Dashboard automatisch generiert durch GitHub Actions</p>
+            <p>🔄 Nächste Aktualisierung: 3.10.2025, 06:31:47</p>
+            <p>💻 Repository: github.com/plankl/ehrenamtskarte_ff_hamberg_v2</p>
+        </div>
+    </div>
+</body>
+</html>
