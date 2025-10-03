@@ -1,0 +1,39 @@
+{
+  "generated": "2025-10-03T06:31:19.931Z",
+  "summary": {
+    "total": 1,
+    "with_mta": 1,
+    "with_25_years": 0,
+    "with_40_years": 0,
+    "qualified": 1,
+    "percentage_qualified": 100
+  },
+  "detailed_analysis": {
+    "age_distribution": {
+      "30-49": 1
+    },
+    "location_distribution": {
+      "92363 Hamberg": 1
+    },
+    "qualification_combinations": {
+      "MTA": 1
+    },
+    "monthly_registrations": {
+      "2025-09": 1
+    },
+    "average_age": 36,
+    "most_common_location": "92363 Hamberg",
+    "qualification_coverage": {
+      "mta_only": 1,
+      "years_25_only": 0,
+      "years_40_only": 0,
+      "multiple_qualifications": 0
+    }
+  },
+  "data_quality": {
+    "complete_profiles": 1,
+    "missing_phone": 0,
+    "missing_address": 0,
+    "data_completeness_percentage": 100
+  }
+}
