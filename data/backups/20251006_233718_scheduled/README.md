@@ -1,18 +1,18 @@
 # 🔒 Feuerwehr Hamberg - Data Backup
 
-**Backup created:** 2025-09-26 23:37:01 UTC  
+**Backup created:** 2025-10-06 23:37:18 UTC  
 **Backup type:** scheduled  
 **Triggered by:** schedule  
 
 ## 📊 Backup Contents
 - **Members:** 1 files
 - **Exports:** 4 files  
-- **Data size:** 112K
+- **Data size:** 684K
 - **Structure issues:** 0
 
 ## 📁 Directory Structure
 ```
-data/backups/20250926_233701_scheduled/
+data/backups/20251006_233718_scheduled/
 ├── members/          # Member JSON files
 ├── exports/          # Generated exports
 
