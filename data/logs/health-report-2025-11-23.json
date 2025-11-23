@@ -1,16 +1,16 @@
 {
-  "report_date": "2025-11-23T03:56:41Z",
+  "report_date": "2025-11-23T23:38:47Z",
   "system_health": {
     "member_count": 1,
     "export_count": 4,
-    "data_size": "880K",
-    "latest_activity": "Total: 9699328    Free: 8736193",
+    "data_size": "884K",
+    "latest_activity": "Total: 9699328    Free: 8736192",
     "structure_issues": 0,
     "invalid_json_files": 0
   },
   "backup_status": {
     "backup_created": true,
-    "backup_path": "data/backups/20251123_035641_scheduled",
+    "backup_path": "data/backups/20251123_233846_scheduled",
     "backup_type": "scheduled"
   },
   "recommendations": 
