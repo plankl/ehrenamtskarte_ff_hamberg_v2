@@ -1,0 +1,17 @@
+{
+  "report_date": "2025-11-27T23:38:49Z",
+  "system_health": {
+    "member_count": 1,
+    "export_count": 4,
+    "data_size": "896K",
+    "latest_activity": "Total: 9699328    Free: 8736193",
+    "structure_issues": 0,
+    "invalid_json_files": 0
+  },
+  "backup_status": {
+    "backup_created": true,
+    "backup_path": "data/backups/20251127_233849_scheduled",
+    "backup_type": "scheduled"
+  },
+  "recommendations": 
+}
