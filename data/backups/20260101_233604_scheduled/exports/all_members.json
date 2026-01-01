@@ -1,5 +1,5 @@
 {
-  "generated": "2025-12-20T06:09:12.227Z",
+  "generated": "2026-01-01T06:11:10.554Z",
   "total": 1,
   "statistics": {
     "total": 1,
@@ -12,7 +12,7 @@
   "export_info": {
     "generated_by": "GitHub Actions",
     "generation_type": "automated_daily",
-    "next_update": "2025-12-21T06:09:12.277Z"
+    "next_update": "2026-01-02T06:11:10.602Z"
   },
   "applications": [
     {
@@ -41,7 +41,7 @@
         "passwortVorhanden": true
       },
       "id": "FF_HAM_20250925_planklsebastian",
-      "age": 36,
+      "age": 37,
       "qualification_summary": "MTA",
       "eligible_for_ehrenamtskarte": true,
       "registration_month": "2025-09"
