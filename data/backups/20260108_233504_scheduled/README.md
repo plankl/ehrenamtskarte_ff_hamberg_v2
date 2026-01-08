@@ -1,6 +1,6 @@
 # 🔒 Feuerwehr Hamberg - Data Backup
 
-**Backup created:** 2025-12-30 23:35:05 UTC  
+**Backup created:** 2026-01-08 23:35:04 UTC  
 **Backup type:** scheduled  
 **Triggered by:** schedule  
 
@@ -12,7 +12,7 @@
 
 ## 📁 Directory Structure
 ```
-data/backups/20251230_233505_scheduled/
+data/backups/20260108_233504_scheduled/
 ├── members/          # Member JSON files
 ├── exports/          # Generated exports
 
