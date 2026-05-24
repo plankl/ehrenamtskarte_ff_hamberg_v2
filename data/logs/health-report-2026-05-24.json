@@ -1,0 +1,17 @@
+{
+  "report_date": "2026-05-24T04:30:58Z",
+  "system_health": {
+    "member_count": 1,
+    "export_count": 4,
+    "data_size": "1.7M",
+    "latest_activity": "Total: 19529728   Free: 18513861",
+    "structure_issues": 0,
+    "invalid_json_files": 0
+  },
+  "backup_status": {
+    "backup_created": true,
+    "backup_path": "data/backups/20260524_043057_scheduled",
+    "backup_type": "scheduled"
+  },
+  "recommendations": 
+}
