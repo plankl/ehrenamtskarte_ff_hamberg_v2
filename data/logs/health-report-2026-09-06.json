@@ -1,16 +1,16 @@
 {
-  "report_date": "2026-09-06T03:16:09Z",
+  "report_date": "2026-09-06T23:35:01Z",
   "system_health": {
     "member_count": 1,
     "export_count": 4,
     "data_size": "2.1M",
-    "latest_activity": "Total: 19529728   Free: 18433499",
+    "latest_activity": "Total: 19529728   Free: 18433519",
     "structure_issues": 0,
     "invalid_json_files": 0
   },
   "backup_status": {
     "backup_created": true,
-    "backup_path": "data/backups/20260906_031609_scheduled",
+    "backup_path": "data/backups/20260906_233501_scheduled",
     "backup_type": "scheduled"
   },
   "recommendations": 
